@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Astutely — Volume I · A first edition under a new name.</title>
+<meta name="description" content="Astutely is a creative marketing agency for brands that need clearer direction, stronger ideas and work that feels as considered as it is effective. Formerly AY Studio." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d0c29;
+    --ink-2:#1a1944;
+    --ink-mute:#5b5a76;
+    --paper:#f1ebde;          /* warm cream — bookcloth */
+    --paper-2:#e9e2d2;
+    --paper-3:#dcd3bf;
+    --rule:#cabfa6;
+    --hair:rgba(13,12,41,.16);
+    --hair-strong:rgba(13,12,41,.32);
+    --vis:#3cff93;            /* editor's pen — used sparingly */
+
+    --serif:'Fraunces','Times New Roman',serif;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+
+    --col-max:1080px;          /* the printed page width */
+    --pad:clamp(20px,4vw,48px);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:17px;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  body::selection,::selection{background:var(--vis); color:var(--ink)}
+
+  /* Subtle paper grain */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+    background-image:radial-gradient(rgba(13,12,41,.04) 1px, transparent 1px);
+    background-size:3px 3px;
+    mix-blend-mode:multiply; opacity:.7;
+  }
+
+  a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+
+  /* ============ THE BINDING / SIDE RIBBON ============ */
+  /* A thin green bookmark-ribbon running vertically — the only loud element. */
+  .ribbon{
+    position:fixed; top:0; bottom:0; left:48px;
+    width:1px; background:var(--hair);
+    z-index:5; pointer-events:none;
+  }
+  .ribbon::before{
+    content:""; position:absolute; top:0; left:-1px; width:3px;
+    height:var(--ribbon-h, 8%); background:var(--vis);
+    transition:height .3s ease;
+    box-shadow:0 0 0 0.5px rgba(60,255,147,.5);
+  }
+  .ribbon-glyph{
+    position:fixed; left:36px; top:36px; z-index:6;
+    width:24px; height:24px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:18px; color:var(--ink); letter-spacing:-.02em;
+    background:var(--paper);
+    border:1px solid var(--ink); border-radius:50%;
+    line-height:1;
+  }
+  .ribbon-folio{
+    position:fixed; left:24px; bottom:24px; z-index:6;
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    font-family:var(--mono); font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+  .ribbon-folio .hi{color:var(--ink); font-weight:400}
+
+  /* ============ TOP STRAP ============ */
+  .strap{
+    position:fixed; top:0; left:0; right:0; z-index:7;
+    height:42px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 48px 0 96px;
+    border-bottom:1px solid var(--hair);
+    background:rgba(241,235,222,.85);
+    backdrop-filter:saturate(1.1) blur(8px);
+    -webkit-backdrop-filter:saturate(1.1) blur(8px);
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+  .strap .left{display:flex; gap:36px; align-items:center}
+  .strap .right{display:flex; gap:36px; align-items:center}
+  .strap a{color:var(--ink); transition:opacity .3s ease}
+  .strap a:hover{opacity:.55}
+  .strap .stamp{color:var(--ink); display:inline-flex; align-items:center; gap:10px}
+  .strap .stamp::before{
+    content:""; width:6px; height:6px; background:var(--vis); border-radius:50%;
+  }
+
+  /* ============ PAGE — single editorial column ============ */
+  main{
+    max-width:var(--col-max);
+    margin:0 auto;
+    padding:0 var(--pad);
+    position:relative;
+    z-index:2;
+  }
+
+  /* Chapter folio mark */
+  .chapter{
+    padding:clamp(80px,12vw,160px) 0;
+    border-top:1px solid var(--hair);
+    position:relative;
+  }
+  .chapter:first-of-type{border-top:0}
+  .chapter-mark{
+    display:grid; grid-template-columns:auto 1fr auto;
+    align-items:baseline; gap:24px;
+    margin-bottom:clamp(48px,7vw,88px);
+    padding-bottom:18px;
+    border-bottom:1px solid var(--hair);
+  }
+  .chapter-roman{
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(36px,5vw,72px); color:var(--ink); line-height:.9;
+    letter-spacing:-.02em;
+  }
+  .chapter-title{
+    font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-mute); padding-top:14px;
+  }
+  .chapter-folio{
+    font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-mute); padding-top:14px; text-align:right;
+  }
+
+  /* common type */
+  h1,h2,h3,h4{font-family:var(--serif); font-weight:300; letter-spacing:-.02em; line-height:1; margin:0; color:var(--ink)}
+  h1{font-size:clamp(48px,9vw,160px); letter-spacing:-.035em; line-height:.9}
+  h2{font-size:clamp(36px,5vw,76px); letter-spacing:-.025em; line-height:1.02}
+  h3{font-size:clamp(22px,2vw,30px)}
+  h4{font-size:18px; letter-spacing:-.005em}
+  p{margin:0; max-width:62ch}
+  .lead{font-family:var(--serif); font-weight:300; font-size:clamp(20px,1.6vw,26px); line-height:1.45; color:var(--ink); letter-spacing:-.005em}
+  .body{font-family:var(--serif); font-weight:400; font-size:18px; line-height:1.6; color:var(--ink-2)}
+  .small{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-mute)}
+
+  /* drop cap */
+  .drop::first-letter{
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    float:left; font-size:5em; line-height:.85; padding:.05em .12em 0 0;
+    color:var(--ink);
+  }
+
+  /* ============ COVER (Chapter 0) ============ */
+  .cover{
+    min-height:100vh;
+    padding:clamp(120px,18vw,240px) 0 clamp(60px,8vw,100px);
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:48px;
+    border-top:0;
+    position:relative;
+  }
+  .cover-head{
+    display:grid; grid-template-columns:1fr 1fr;
+    align-items:start; gap:32px;
+    border-bottom:1px solid var(--hair);
+    padding-bottom:32px;
+  }
+  .cover-head .l{font-family:var(--serif); font-style:italic; font-weight:300; font-size:24px; color:var(--ink); letter-spacing:-.01em; line-height:1.2}
+  .cover-head .r{font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--ink-mute); text-align:right; line-height:1.8}
+
+  .cover-title{
+    align-self:center;
+    text-align:center;
+  }
+  .cover-title h1 .word{display:inline-block; overflow:hidden; vertical-align:baseline}
+  .cover-title h1 .word > span{display:inline-block; transform:translateY(110%); transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+  .cover.in h1 .word > span{transform:translateY(0)}
+  .cover h1 .word:nth-child(2) > span{transition-delay:.08s}
+  .cover h1 .word:nth-child(3) > span{transition-delay:.16s}
+  .cover h1 .word:nth-child(4) > span{transition-delay:.24s}
+  .cover h1 em{
+    font-style:italic; font-weight:400; position:relative; padding:0 .04em;
+    color:var(--ink);
+  }
+  .cover h1 em::after{
+    content:""; position:absolute; left:.04em; right:.04em; bottom:.08em;
+    height:6px; background:var(--vis); z-index:-1;
+    transform-origin:right center; transform:scaleX(0);
+    transition:transform 1.4s cubic-bezier(.2,.7,.2,1) .9s;
+  }
+  .cover.in h1 em::after{transform:scaleX(1); transform-origin:left center}
+
+  .cover-foot{
+    display:grid; grid-template-columns:1fr auto 1fr;
+    align-items:end; gap:32px;
+    border-top:1px solid var(--hair);
+    padding-top:28px;
+    opacity:0; transform:translateY(16px);
+    transition:opacity 1s ease 1.2s, transform 1s ease 1.2s;
+  }
+  .cover.in .cover-foot{opacity:1; transform:none}
+  .cover-foot .pub{font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--ink-mute)}
+  .cover-foot .center{
+    font-family:var(--serif); font-style:italic; font-weight:400; font-size:18px;
+    color:var(--ink); text-align:center; max-width:46ch; line-height:1.4;
+  }
+  .cover-foot .right{font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--ink-mute); text-align:right}
+
+  /* ============ CONTENTS ============ */
+  .contents{
+    padding:clamp(64px,9vw,120px) 0;
+    border-top:1px solid var(--hair);
+    border-bottom:1px solid var(--hair);
+    display:grid; grid-template-columns:200px 1fr; gap:48px;
+  }
+  .contents-label{font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--ink-mute)}
+  .contents-list{display:flex; flex-direction:column; gap:0}
+  .contents-row{
+    display:grid; grid-template-columns:60px 1fr auto;
+    align-items:baseline; gap:24px;
+    padding:14px 0;
+    border-bottom:1px dotted var(--hair);
+    transition:padding-left .35s ease, color .35s ease;
+  }
+  .contents-row:last-child{border-bottom:0}
+  .contents-row:hover{padding-left:14px}
+  .contents-row .r{font-family:var(--serif); font-style:italic; font-weight:400; font-size:18px; color:var(--ink-mute)}
+  .contents-row .t{font-family:var(--serif); font-weight:300; font-size:clamp(20px,1.7vw,26px); color:var(--ink); letter-spacing:-.01em; line-height:1.2}
+  .contents-row .p{font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--ink-mute)}
+  .contents-row:hover .t{color:var(--ink)}
+
+  /* ============ CHAPTER I — The Proposition ============ */
+  .prop{}
+  .prop h2{margin-bottom:48px; max-width:14ch}
+  .prop h2 .pen{
+    position:relative; display:inline-block; padding:0 .04em;
+  }
+  .prop h2 .pen::after{
+    content:""; position:absolute; left:.04em; right:.04em; bottom:.08em;
+    height:6px; background:var(--vis); z-index:-1;
+  }
+  .prop-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
+  }
+  .prop-marg{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-mute); padding-top:6px}
+  .prop-marg .v{
+    display:block; font-family:var(--serif); font-style:italic; font-weight:400; font-size:18px;
+    text-transform:none; letter-spacing:-.005em; color:var(--ink); margin-top:6px; line-height:1.4;
+  }
+  .prop-pull{
+    margin:80px 0 0;
+    padding:32px 0;
+    border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+    display:grid; grid-template-columns:80px 1fr 80px; gap:24px; align-items:start;
+  }
+  .prop-pull .marker{
+    font-family:var(--serif); font-style:italic; color:var(--ink-mute); font-size:14px;
+  }
+  .prop-pull .marker.r{text-align:right}
+  .prop-pull blockquote{
+    margin:0; font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(28px,3.5vw,52px); line-height:1.05; letter-spacing:-.02em; color:var(--ink);
+    text-align:center; max-width:22ch; margin-inline:auto;
+  }
+  .prop-pull blockquote .pen{
+    background:var(--vis); padding:0 .15em; margin:0 -.05em;
+  }
+
+  /* ============ CHAPTER II — The renaming ============ */
+  .rename{}
+  .rename-mark{
+    margin:0 auto clamp(40px,6vw,72px);
+    padding:clamp(36px,5vw,72px) 0;
+    text-align:center;
+    border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+    background:
+      radial-gradient(ellipse at center, rgba(60,255,147,.14), transparent 60%),
+      var(--paper);
+  }
+  .rename-mark .from{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(40px,7vw,96px); color:var(--ink-mute); line-height:.9;
+    letter-spacing:-.02em;
+  }
+  .rename-mark .arrow{
+    display:inline-block; margin:0 clamp(20px,3vw,48px);
+    font-family:var(--mono); font-size:clamp(20px,2.4vw,28px);
+    color:var(--ink); position:relative; top:-.3em; letter-spacing:0;
+  }
+  .rename-mark .arrow::after{
+    content:""; display:inline-block; width:.4em; height:.4em;
+    border-top:1.5px solid var(--ink); border-right:1.5px solid var(--ink);
+    transform:rotate(45deg) translate(-2px,2px); margin-left:-.1em;
+  }
+  .rename-mark .to{
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(40px,7vw,96px); color:var(--ink); line-height:.9;
+    letter-spacing:-.02em;
+    background:linear-gradient(180deg, transparent 65%, var(--vis) 65%, var(--vis) 90%, transparent 90%);
+    padding:0 .08em;
+  }
+  .rename-cap{
+    font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--ink-mute); margin-top:clamp(28px,4vw,48px);
+  }
+  .rename-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
+  }
+  .rename-q{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(22px,2.2vw,32px); line-height:1.2; color:var(--ink); letter-spacing:-.01em;
+    border-left:2px solid var(--vis); padding-left:18px;
+  }
+
+  /* ============ CHAPTER III — The Practice ============ */
+  .practice{}
+  .practice h2{margin-bottom:64px}
+  .practice-list{
+    display:flex; flex-direction:column; gap:0;
+    border-top:1px solid var(--hair);
+  }
+  .practice-row{
+    padding:32px 0;
+    border-bottom:1px solid var(--hair);
+    display:grid; grid-template-columns:80px 1fr 1.4fr 80px;
+    gap:32px; align-items:baseline;
+    transition:padding-left .35s ease;
+    cursor:pointer;
+  }
+  .practice-row:hover{padding-left:18px}
+  .practice-row .n{font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--ink-mute)}
+  .practice-row .t{font-family:var(--serif); font-weight:300; font-size:clamp(28px,3vw,40px); letter-spacing:-.02em; color:var(--ink); line-height:1.05}
+  .practice-row .d{font-family:var(--serif); font-weight:400; font-size:16px; color:var(--ink-2); line-height:1.55; max-width:46ch}
+  .practice-row .more{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink-mute); text-align:right;
+    transition:color .35s ease;
+  }
+  .practice-row:hover .more{color:var(--ink)}
+  .practice-row:hover .t{font-style:italic}
+
+  /* ============ CHAPTER IV — Engagements (work) ============ */
+  .engage{}
+  .engage h2{margin-bottom:48px}
+  .engage-intro{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
+    margin-bottom:64px;
+  }
+  .engage-table{
+    border-top:1px solid var(--hair);
+  }
+  .eg-row{
+    display:grid;
+    grid-template-columns:80px 110px 1fr 1.4fr 130px;
+    gap:24px; align-items:center;
+    padding:18px 0;
+    border-bottom:1px solid var(--hair);
+    cursor:pointer;
+    transition:padding-left .35s ease, background .35s ease;
+    position:relative;
+  }
+  .eg-row:hover{padding-left:18px; background:rgba(60,255,147,.07)}
+  .eg-row .ix{font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--ink-mute)}
+  .eg-row .thumb{
+    width:96px; height:64px; overflow:hidden;
+    background:var(--paper-2);
+    border:1px solid var(--hair);
+    position:relative;
+  }
+  .eg-row .thumb img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover;
+    filter:grayscale(.4) saturate(.85) contrast(1.02);
+    transition:filter .5s ease, transform 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .eg-row:hover .thumb img{filter:grayscale(0) saturate(1) contrast(1); transform:scale(1.05)}
+  .eg-row .name{font-family:var(--serif); font-weight:400; font-size:clamp(20px,1.7vw,26px); letter-spacing:-.01em; color:var(--ink); line-height:1.1}
+  .eg-row .name em{font-style:italic; font-weight:300}
+  .eg-row .cls{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-mute)}
+  .eg-row .yr{font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--ink-mute); text-align:right}
+  .eg-row .yr::after{
+    content:" →"; opacity:0; transition:opacity .35s ease, padding .35s ease;
+  }
+  .eg-row:hover .yr::after{opacity:1; padding-left:6px}
+
+  /* ============ CHAPTER V — The hands ============ */
+  .hands{}
+  .hands h2{margin-bottom:24px}
+  .hands-lede{margin-bottom:64px; max-width:54ch}
+  .hands-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:32px;
+  }
+  .hand{
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .hand .frame{
+    aspect-ratio:4/5;
+    background:var(--paper-2);
+    overflow:hidden; position:relative;
+    border:1px solid var(--hair);
+  }
+  .hand .frame img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center top;
+    filter:grayscale(.5) saturate(.85) contrast(1.02);
+    transition:filter .6s ease, transform 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .hand:hover .frame img{filter:grayscale(0) saturate(1) contrast(1); transform:scale(1.04)}
+  .hand .ix{font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--ink-mute)}
+  .hand .name{font-family:var(--serif); font-weight:400; font-size:22px; letter-spacing:-.01em; line-height:1.1}
+  .hand .name em{font-style:italic; font-weight:300}
+  .hand .role{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-mute); margin-top:4px}
+  .hand .bio{font-family:var(--serif); font-weight:400; font-size:14.5px; line-height:1.55; color:var(--ink-2); margin-top:6px}
+
+  /* ============ CHAPTER VI — Begin (contact) ============ */
+  .begin{position:relative}
+  .begin-mark{
+    text-align:center; margin-bottom:clamp(40px,6vw,72px);
+  }
+  .begin h2{
+    font-size:clamp(56px,11vw,160px); letter-spacing:-.035em; line-height:.9;
+    text-align:center;
+  }
+  .begin h2 em{font-style:italic; font-weight:400}
+  .begin h2 em::after{
+    content:""; display:block;
+    width:120px; height:4px; background:var(--vis);
+    margin:24px auto 0;
+  }
+  .begin-grid{
+    margin-top:80px;
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
+    border-top:1px solid var(--hair);
+    padding-top:48px;
+  }
+  .mail-link{
+    font-family:var(--serif); font-weight:300;
+    font-size:clamp(28px,4vw,56px); line-height:1; color:var(--ink);
+    border-bottom:1px solid var(--ink); padding-bottom:8px;
+    transition:padding .4s ease, color .4s ease, border-color .4s ease;
+    display:inline-block;
+  }
+  .mail-link:hover{padding-bottom:14px; color:var(--ink); border-color:var(--vis); box-shadow:0 1px 0 var(--vis)}
+  .mail-link em{font-style:italic; font-weight:300}
+
+  .begin-info{
+    display:grid; grid-template-columns:1fr 1fr; gap:32px 24px;
+  }
+  .info-cell .lbl{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-mute); margin-bottom:8px;
+  }
+  .info-cell .val{
+    font-family:var(--serif); font-weight:300; font-size:18px; line-height:1.4;
+    color:var(--ink); letter-spacing:-.005em;
+  }
+  .info-cell .val em{font-style:italic}
+
+  /* ============ COLOPHON / FOOTER ============ */
+  .colophon{
+    margin-top:clamp(80px,12vw,140px);
+    border-top:1px solid var(--hair);
+    padding:clamp(40px,5vw,72px) 0;
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:48px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+  .colophon h4{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; color:var(--ink); font-weight:400; margin-bottom:14px;
+  }
+  .colophon ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+  .colophon .mark{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:24px; color:var(--ink); letter-spacing:-.01em; text-transform:none;
+  }
+  .colophon .mark .pen{background:var(--vis); padding:0 .05em}
+  .colophon .credit{
+    margin-top:24px; font-family:var(--serif); font-style:italic; font-weight:400; font-size:14px;
+    color:var(--ink-mute); text-transform:none; letter-spacing:0; line-height:1.5;
+  }
+  .colophon-bottom{
+    border-top:1px solid var(--hair);
+    padding:24px var(--pad);
+    max-width:var(--col-max); margin:0 auto;
+    display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+
+  /* ============ Reveal motion ============ */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1; transform:none}
+  .reveal.d1{transition-delay:.08s}
+  .reveal.d2{transition-delay:.16s}
+  .reveal.d3{transition-delay:.24s}
+
+  /* ============ Responsive ============ */
+  @media (max-width:1024px){
+    .hands-grid{grid-template-columns:repeat(2,1fr)}
+    .eg-row{grid-template-columns:60px 90px 1fr 130px; gap:18px}
+    .eg-row .cls{display:none}
+  }
+  @media (max-width:780px){
+    :root{ --pad:20px }
+    .ribbon{display:none}
+    .ribbon-glyph{display:none}
+    .ribbon-folio{display:none}
+    .strap{padding:0 16px; gap:12px; font-size:9px; letter-spacing:.18em}
+    .strap .left .stamp{display:none}
+    main{padding-top:0}
+    .cover{padding:80px 0 60px}
+    .cover-head{grid-template-columns:1fr; gap:18px}
+    .cover-head .r{text-align:left}
+    .cover-foot{grid-template-columns:1fr; text-align:left}
+    .cover-foot .center, .cover-foot .right{text-align:left}
+    .contents{grid-template-columns:1fr; gap:24px; padding:48px 0}
+    .contents-row{grid-template-columns:50px 1fr; gap:14px}
+    .contents-row .p{display:none}
+    .prop-grid{grid-template-columns:1fr; gap:32px}
+    .prop-pull{grid-template-columns:1fr; gap:14px}
+    .prop-pull .marker.r{text-align:left}
+    .rename-mark .arrow{display:block; margin:14px auto; transform:rotate(90deg)}
+    .rename-grid{grid-template-columns:1fr; gap:32px}
+    .practice-row{grid-template-columns:50px 1fr; gap:14px}
+    .practice-row .d, .practice-row .more{grid-column:2 / 3}
+    .practice-row .more{margin-top:8px; text-align:left}
+    .engage-intro{grid-template-columns:1fr; gap:24px}
+    .eg-row{grid-template-columns:50px 1fr 80px; gap:14px}
+    .eg-row .thumb{display:none}
+    .hands-grid{grid-template-columns:1fr 1fr; gap:20px}
+    .begin h2{font-size:clamp(48px,12vw,88px)}
+    .begin-grid{grid-template-columns:1fr; gap:48px}
+    .begin-info{grid-template-columns:1fr}
+    .colophon{grid-template-columns:1fr; gap:32px}
+    .chapter-mark{grid-template-columns:auto 1fr; gap:14px}
+    .chapter-folio{display:none}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important}
+    .cover h1 .word > span{transform:none}
+    .reveal{opacity:1; transform:none}
+    .cover h1 em::after{transform:scaleX(1)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ BINDING / RIBBON ============ -->
+<div class="ribbon" aria-hidden="true"></div>
+<div class="ribbon-glyph" aria-hidden="true">A</div>
+<div class="ribbon-folio" aria-hidden="true">Astutely · <span class="hi">Vol I</span> · MMXXVI</div>
+
+<!-- TOP STRAP -->
+<header class="strap">
+  <div class="left">
+    <span class="stamp">Astutely</span>
+    <span>Vol. I &middot; MMXXVI</span>
+  </div>
+  <div class="right">
+    <a href="#proposition">Read</a>
+    <a href="#begin">Write</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ COVER ============ -->
+  <section class="cover" id="cover">
+    <div class="cover-head">
+      <div class="l">An edition by Astutely<br/>&mdash; formerly AY Studio.</div>
+      <div class="r">
+        Volume I &middot; First Edition<br/>
+        Set in Fraunces &middot; printed digitally<br/>
+        Holywood, NI &middot; MMXXVI
+      </div>
+    </div>
+
+    <div class="cover-title">
+      <h1 aria-label="Sharp thinking, beautifully applied.">
+        <span class="word"><span><em>Sharp</em></span></span>
+        <span class="word"><span>thinking,</span></span><br/>
+        <span class="word"><span>beautifully</span></span>
+        <span class="word"><span>applied.</span></span>
+      </h1>
+    </div>
+
+    <div class="cover-foot">
+      <div class="pub">Astutely &middot; Vol I</div>
+      <div class="center">A creative marketing agency for brands that need clearer direction, stronger ideas, and work that feels as considered as it is effective.</div>
+      <div class="right">First edition<br/>under a new name</div>
+    </div>
+  </section>
+
+  <!-- ============ CONTENTS ============ -->
+  <section class="contents" id="contents">
+    <div class="contents-label">Contents</div>
+    <ul class="contents-list">
+      <li><a class="contents-row" href="#proposition"><span class="r">I.</span><span class="t">A proposition &mdash; sharp thinking, beautifully applied.</span><span class="p">P.&nbsp;01</span></a></li>
+      <li><a class="contents-row" href="#renaming"><span class="r">II.</span><span class="t">A renaming &mdash; AY Studio, now Astutely.</span><span class="p">P.&nbsp;02</span></a></li>
+      <li><a class="contents-row" href="#practice"><span class="r">III.</span><span class="t">The practice &mdash; five disciplines, one studio.</span><span class="p">P.&nbsp;03</span></a></li>
+      <li><a class="contents-row" href="#engagements"><span class="r">IV.</span><span class="t">Selected engagements &mdash; work, in plain sight.</span><span class="p">P.&nbsp;04</span></a></li>
+      <li><a class="contents-row" href="#hands"><span class="r">V.</span><span class="t">The hands &mdash; the people behind the work.</span><span class="p">P.&nbsp;05</span></a></li>
+      <li><a class="contents-row" href="#begin"><span class="r">VI.</span><span class="t">A conversation &mdash; should we begin?</span><span class="p">P.&nbsp;06</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ============ I — Proposition ============ -->
+  <section class="chapter prop" id="proposition">
+    <div class="chapter-mark">
+      <span class="chapter-roman">I.</span>
+      <span class="chapter-title">A proposition</span>
+      <span class="chapter-folio">P. 01 &middot; MMXXVI</span>
+    </div>
+
+    <h2 class="reveal">Most brands do not need more marketing.<br/>They need <span class="pen">better decisions.</span></h2>
+
+    <div class="prop-grid">
+      <div>
+        <p class="lead reveal d1">More posts, more campaigns and more activity will not fix unclear thinking. We help brands pause, sharpen the message, and move with purpose.</p>
+        <p class="body reveal d2 drop" style="margin-top:32px">Astutely is built for founders, charities, sport teams and growing businesses who want their marketing to feel less complicated and more effective. Brand, web, marketing, content and the systems that hold it all together &mdash; under one roof, made by one senior team.</p>
+        <p class="body reveal d3" style="margin-top:24px">We start with clarity, because execution without clarity wastes time and money. Then we turn that clarity into work that people actually notice.</p>
+      </div>
+      <div>
+        <div class="prop-marg reveal d1">
+          <span>The promise</span>
+          <span class="v">Sharp thinking in. Better work&nbsp;out.</span>
+        </div>
+        <div class="prop-marg reveal d2" style="margin-top:36px">
+          <span>The standard</span>
+          <span class="v">Calm, considered, hands-on. The people you meet are the people who do the work.</span>
+        </div>
+        <div class="prop-marg reveal d3" style="margin-top:36px">
+          <span>The intake</span>
+          <span class="v">A limited number of clients at a time. Quality requires focus.</span>
+        </div>
+      </div>
+    </div>
+
+    <figure class="prop-pull reveal">
+      <span class="marker">&para;&nbsp;01</span>
+      <blockquote>We build digital on a foundation of <span class="pen">clarity.</span></blockquote>
+      <span class="marker r">Astutely</span>
+    </figure>
+  </section>
+
+  <!-- ============ II — Renaming ============ -->
+  <section class="chapter rename" id="renaming">
+    <div class="chapter-mark">
+      <span class="chapter-roman">II.</span>
+      <span class="chapter-title">A renaming</span>
+      <span class="chapter-folio">P. 02 &middot; MMXXVI</span>
+    </div>
+
+    <div class="rename-mark reveal" aria-label="AY Studio is now Astutely">
+      <span class="from">AY&nbsp;Studio</span>
+      <span class="arrow" aria-hidden="true">———</span>
+      <span class="to">Astutely.</span>
+      <div class="rename-cap">Same hand &middot; sharper pen</div>
+    </div>
+
+    <div class="rename-grid">
+      <div>
+        <p class="lead reveal">After nine years as AY Studio, we have changed our name &mdash; not the team, not the people, not the work.</p>
+        <p class="body reveal d1" style="margin-top:24px">The new name reflects how we already think: carefully, clearly and with intent. <em>Astute</em> &mdash; considered, clear-eyed about what work needs to do. The old name was a set of initials. The new name is a point of view.</p>
+        <p class="body reveal d2" style="margin-top:24px">Same partners. Same clients. The practice has quietly grown from brand &amp; web into the full, end-to-end digital partner our clients use today &mdash; the label has finally caught up.</p>
+      </div>
+      <div>
+        <p class="rename-q reveal d1">Why now?<br/>Because the work has become sharper. We wanted a name that says so plainly.</p>
+        <p class="rename-q reveal d2" style="margin-top:32px; border-color:var(--ink); border-left-style:dashed">What changes for clients?<br/>Nothing operational. New stationery. Same standard.</p>
+        <p class="rename-q reveal d3" style="margin-top:32px">What stays?<br/>The team, the relationships, the clarity-first method.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ III — Practice ============ -->
+  <section class="chapter practice" id="practice">
+    <div class="chapter-mark">
+      <span class="chapter-roman">III.</span>
+      <span class="chapter-title">The practice</span>
+      <span class="chapter-folio">P. 03 &middot; MMXXVI</span>
+    </div>
+
+    <h2 class="reveal">Five disciplines.<br/>One senior&nbsp;studio.</h2>
+
+    <div class="practice-list">
+      <div class="practice-row reveal">
+        <span class="n">&para; i</span>
+        <span class="t">Brand &amp; Strategy</span>
+        <span class="d">Positioning, identity, narrative and the strategic foundation that makes everything else coherent. Built around a clear point of view.</span>
+        <span class="more">Read &middot; on</span>
+      </div>
+      <div class="practice-row reveal d1">
+        <span class="n">&para; ii</span>
+        <span class="t">Web Design &amp; Build</span>
+        <span class="d">High-performance websites, landing pages and digital products. Designed to convert and built to last &mdash; never templated, never throwaway.</span>
+        <span class="more">Read &middot; on</span>
+      </div>
+      <div class="practice-row reveal d2">
+        <span class="n">&para; iii</span>
+        <span class="t">Digital Marketing</span>
+        <span class="d">SEO, paid media, content strategy and campaigns &mdash; structured around a clear story and measurable goals, never activity for activity&rsquo;s sake.</span>
+        <span class="more">Read &middot; on</span>
+      </div>
+      <div class="practice-row reveal d3">
+        <span class="n">&para; iv</span>
+        <span class="t">Content &amp; Creative</span>
+        <span class="d">Photography, video, copywriting and campaign creative that communicates your value with impact. Considered work, not stock-image filler.</span>
+        <span class="more">Read &middot; on</span>
+      </div>
+      <div class="practice-row reveal d3">
+        <span class="n">&para; v</span>
+        <span class="t">Systems &amp; Automation</span>
+        <span class="d">CRM, automation, reporting and the operational architecture that makes growth scalable &mdash; so the marketing keeps running long after launch.</span>
+        <span class="more">Read &middot; on</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ IV — Engagements ============ -->
+  <section class="chapter engage" id="engagements">
+    <div class="chapter-mark">
+      <span class="chapter-roman">IV.</span>
+      <span class="chapter-title">Selected engagements</span>
+      <span class="chapter-folio">P. 04 &middot; MMXXVI</span>
+    </div>
+
+    <h2 class="reveal">Recent <em style="font-style:italic">work,</em><br/>in plain sight.</h2>
+
+    <div class="engage-intro" style="margin-top:48px">
+      <p class="lead reveal">A short, considered list. Each one a long conversation, a clear brief, and work we&rsquo;d be glad to talk about.</p>
+      <p class="body reveal d1">Sport, charity, civic and growing-business clients across the UK and Ireland. Brand, web, marketing and the systems behind them.</p>
+    </div>
+
+    <div class="engage-table">
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 01</span>
+        <span class="thumb"><img src="https://bunny-wp-pullzone-08ffyrom42.b-cdn.net/wp-content/uploads/2026/03/Glentoran-Winner-2-copy-scaled.jpg" alt="Glentoran FC" loading="lazy"/></span>
+        <span class="name">Glentoran FC</span>
+        <span class="cls">Web &middot; Marketing &middot; Systems</span>
+        <span class="yr">MMXXIV&ndash;XXVI</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 02</span>
+        <span class="thumb"><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/5dc6b374-e773-4d00-b502-e4edf60c7508/RK_Images_1920x1080_3.jpg" alt="R Kings Competitions" loading="lazy"/></span>
+        <span class="name">R Kings Competitions</span>
+        <span class="cls">Strategy &middot; Platform &middot; Scale</span>
+        <span class="yr">MMXXII&ndash;XXVI</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 03</span>
+        <span class="thumb"><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/ead76eb7-9c03-415b-b6af-5d11cc7ae0de/AgeNI_Laptop-site-iPad_Man.png" alt="Age NI" loading="lazy"/></span>
+        <span class="name">Age NI</span>
+        <span class="cls">SEO &middot; Digital &middot; Charity</span>
+        <span class="yr">MMXXIII&ndash;XXVI</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 04</span>
+        <span class="thumb"><img src="https://seacourtprintworkshop.com/wp-content/uploads/2025/01/bo9rlmy2hkhkjp5ermbt-1024x683.webp" alt="Seacourt Print Workshop" loading="lazy"/></span>
+        <span class="name">Seacourt Print Workshop</span>
+        <span class="cls">Brand &middot; Web &middot; Arts</span>
+        <span class="yr">MMXXV</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 05</span>
+        <span class="thumb"><img src="https://theaviaryfloral.com/cdn/shop/files/Banner003_1000x.jpg" alt="The Aviary Floral" loading="lazy"/></span>
+        <span class="name">The Aviary Floral</span>
+        <span class="cls">Brand &middot; Content &middot; Floral</span>
+        <span class="yr">MMXXIV</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 06</span>
+        <span class="thumb"><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/1714759123787-Q837421115GGD0B41M8E/KBI_CaseStudy_Visuals_master59.png" alt="Kickboxing Ireland" loading="lazy"/></span>
+        <span class="name">Kickboxing Ireland</span>
+        <span class="cls">Brand &middot; Digital &middot; Sport</span>
+        <span class="yr">MMXXIII</span>
+      </a>
+      <a class="eg-row reveal" href="#">
+        <span class="ix">&sect; 07</span>
+        <span class="thumb"><img src="https://bunny-wp-pullzone-xm3uwe2lhs.b-cdn.net/wp-content/uploads/2024/04/PEB-Edited-scaled.jpg" alt="Camborne Town Council" loading="lazy"/></span>
+        <span class="name">Camborne Town Council</span>
+        <span class="cls">Web &middot; Digital &middot; Civic</span>
+        <span class="yr">MMXXIV</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ V — Hands ============ -->
+  <section class="chapter hands" id="hands">
+    <div class="chapter-mark">
+      <span class="chapter-roman">V.</span>
+      <span class="chapter-title">The hands</span>
+      <span class="chapter-folio">P. 05 &middot; MMXXVI</span>
+    </div>
+
+    <h2 class="reveal">The people<br/>behind the work.</h2>
+    <p class="hands-lede lead reveal d1" style="margin-top:24px">A small, senior team. The people who think about your project are the people who build it &mdash; no graduate hand-offs, no re-briefing.</p>
+
+    <div class="hands-grid">
+      <div class="hand reveal">
+        <div class="frame">
+          <img src="img-robert-annett.jpg" alt="Robert Annett" loading="lazy"/>
+        </div>
+        <div>
+          <span class="ix">&sect; 01</span>
+          <h4 class="name">Robert <em>Annett</em></h4>
+          <div class="role">Founder &amp; Managing Partner</div>
+          <p class="bio">Founded the studio in 2017. Leads strategy, client direction, and the operating standard the rest of the work is held to.</p>
+        </div>
+      </div>
+      <div class="hand reveal d1">
+        <div class="frame">
+          <img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/d0231026-18fe-4c73-9456-cc9daf750036/AY_RyanYoung-Pink.jpg" alt="Ryan Young" loading="lazy"/>
+        </div>
+        <div>
+          <span class="ix">&sect; 02</span>
+          <h4 class="name">Ryan <em>Young</em></h4>
+          <div class="role">Creative Director</div>
+          <p class="bio">Brand, identity and art direction. The editorial eye behind the studio&rsquo;s visual standard.</p>
+        </div>
+      </div>
+      <div class="hand reveal d2">
+        <div class="frame">
+          <img src="https://placeholdit.com/1080x1080/dddddd/999999" alt="Russell Lever" loading="lazy"/>
+        </div>
+        <div>
+          <span class="ix">&sect; 03</span>
+          <h4 class="name">Russell <em>Lever</em></h4>
+          <div class="role">PR &amp; Marketing Director</div>
+          <p class="bio">Story, narrative and earned attention. Leads PR, marketing strategy and comms work for charity, sport and growing-business clients.</p>
+        </div>
+      </div>
+      <div class="hand reveal d3">
+        <div class="frame">
+          <img src="https://placeholdit.com/1080x1080/dddddd/999999" alt="Garry McNally" loading="lazy"/>
+        </div>
+        <div>
+          <span class="ix">&sect; 04</span>
+          <h4 class="name">Garry <em>McNally</em></h4>
+          <div class="role">Senior Web Developer</div>
+          <p class="bio">Builds the websites and digital products. Performance, accessibility and the engineering rigour behind work that has to actually run.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VI — Begin ============ -->
+  <section class="chapter begin" id="begin">
+    <div class="chapter-mark">
+      <span class="chapter-roman">VI.</span>
+      <span class="chapter-title">A conversation</span>
+      <span class="chapter-folio">P. 06 &middot; MMXXVI</span>
+    </div>
+
+    <div class="begin-mark">
+      <span class="small">&mdash; Should we begin? &mdash;</span>
+    </div>
+
+    <h2 class="reveal">Ready to <em>sharpen</em><br/>what comes next?</h2>
+
+    <div class="begin-grid">
+      <div>
+        <p class="body reveal" style="font-size:18px; line-height:1.55">If you are launching, repositioning or trying to make your marketing feel clearer and more effective, we should talk. Tell us about your project and we&rsquo;ll come back within two business days with an honest view on how we can help.</p>
+        <div style="margin-top:32px">
+          <a class="mail-link reveal d1" href="mailto:hello@ay.studio">hello@ay.studio</a>
+        </div>
+      </div>
+      <div class="begin-info">
+        <div class="info-cell reveal">
+          <div class="lbl">Studio</div>
+          <div class="val">Second Floor, 144 High&nbsp;Street,<br/>Holywood, BT18&nbsp;9HS</div>
+        </div>
+        <div class="info-cell reveal d1">
+          <div class="lbl">For new work</div>
+          <div class="val"><em>Briefs, intros and the quietly ambitious welcome.</em></div>
+        </div>
+        <div class="info-cell reveal d2">
+          <div class="lbl">Hours</div>
+          <div class="val">Mon &mdash; Fri<br/>09:00 &mdash; 18:00</div>
+        </div>
+        <div class="info-cell reveal d3">
+          <div class="lbl">Reply window</div>
+          <div class="val">Within two<br/>business days.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- COLOPHON -->
+<footer>
+  <div class="colophon">
+    <div>
+      <span class="mark">Astutely<span class="pen">.</span></span>
+      <p class="credit">A creative marketing agency for brands that need clearer direction, stronger ideas and work that feels as considered as it is effective.</p>
+    </div>
+    <div>
+      <h4>The studio</h4>
+      <ul>
+        <li>Second Floor, 144 High St</li>
+        <li>Holywood, BT18 9HS</li>
+        <li>hello@ay.studio</li>
+        <li>ay.studio</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Volume I &middot; Index</h4>
+      <ul>
+        <li><a href="#proposition">I. A proposition</a></li>
+        <li><a href="#renaming">II. A renaming</a></li>
+        <li><a href="#practice">III. The practice</a></li>
+        <li><a href="#engagements">IV. Engagements</a></li>
+        <li><a href="#hands">V. The hands</a></li>
+        <li><a href="#begin">VI. A conversation</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="colophon-bottom">
+    <span>&copy; MMXXVI Astutely &middot; Formerly AY Studio</span>
+    <span>First edition &middot; Set in Fraunces, Inter, JetBrains Mono</span>
+  </div>
+</footer>
+
+<script>
+  // Cover entrance
+  requestAnimationFrame(()=>{ document.getElementById('cover').classList.add('in'); });
+
+  // Reveal on intersect
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Ribbon scroll progress
+  const ribbon = document.querySelector('.ribbon');
+  function progress(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? Math.min(100, Math.max(0, (h.scrollTop / max) * 100)) : 0;
+    if (ribbon) ribbon.style.setProperty('--ribbon-h', p + '%');
+  }
+  document.addEventListener('scroll', progress, {passive:true});
+  progress();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Astutely — Sharp thinking, beautifully applied.</title>
+<meta name="description" content="Astutely is a creative marketing agency for brands that need clearer direction, stronger ideas and work that feels as considered as it is effective. Formerly AY Studio." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d0c29;
+    --ink-2:#161538;
+    --ink-3:#1f1d4a;
+    --paper:#f4f2eb;
+    --vis:#3cff93;
+    --vis-d:#22dd75;
+    --line:rgba(255,255,255,.12);
+    --line-2:rgba(255,255,255,.28);
+    --mute:#8b8aa8;
+
+    --display:'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+
+    --frame-pad:clamp(40px, 6vw, 96px);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%; overflow:hidden}
+  html{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{
+    background:var(--ink);
+    color:#fff;
+    font-family:var(--display);
+    font-size:16px;
+    line-height:1.4;
+    overscroll-behavior:none;
+    touch-action:pan-y;
+  }
+  ::selection{background:var(--vis); color:var(--ink)}
+  a{color:inherit; text-decoration:none}
+  img{display:block; max-width:100%}
+
+  /* ============ HUD — fixed chrome above the cinema ============ */
+  .hud{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+  }
+  .hud-top{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px var(--frame-pad);
+    pointer-events:auto;
+  }
+  .brand{
+    display:inline-flex; align-items:baseline; gap:10px;
+    font-family:var(--display); font-weight:500; font-size:18px; letter-spacing:-.01em; color:#fff;
+  }
+  .brand .pip{
+    width:8px; height:8px; background:var(--vis); display:inline-block;
+    transform:translateY(-1px);
+    box-shadow:0 0 0 4px rgba(60,255,147,.16);
+  }
+  .brand small{
+    font-family:var(--mono); font-weight:400; font-size:10px; letter-spacing:.24em;
+    color:var(--mute); text-transform:uppercase; margin-left:4px;
+  }
+  .frame-counter{
+    font-family:var(--mono); font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+    color:#fff; display:flex; align-items:center; gap:14px;
+  }
+  .frame-counter .total{color:var(--mute)}
+  .frame-counter .now{color:var(--vis); min-width:2.5ch; display:inline-block; text-align:right}
+
+  .progress{
+    position:absolute; left:var(--frame-pad); right:var(--frame-pad); top:60px;
+    height:1px; background:var(--line);
+  }
+  .progress::after{
+    content:""; position:absolute; left:0; top:-1px; width:var(--p, 0%); height:3px;
+    background:var(--vis); transition:width .25s ease;
+  }
+
+  .hud-bottom{
+    position:absolute; bottom:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px var(--frame-pad);
+    pointer-events:auto;
+  }
+  .hint{
+    font-family:var(--mono); font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--mute);
+    display:inline-flex; align-items:center; gap:14px;
+  }
+  .hint kbd{
+    font-family:var(--mono); font-size:10px;
+    border:1px solid var(--line-2); padding:3px 7px; color:#fff;
+    border-radius:2px; line-height:1;
+  }
+  .dots{display:flex; gap:10px; pointer-events:auto}
+  .dots a{
+    width:8px; height:8px; border-radius:50%;
+    background:transparent; border:1px solid var(--line-2);
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .dots a.active{background:var(--vis); border-color:var(--vis); transform:scale(1.2)}
+  .dots a:hover{border-color:var(--vis)}
+
+  /* ============ FILM STRIP ============ */
+  .strip{
+    height:100vh; width:100vw;
+    overflow-x:auto; overflow-y:hidden;
+    display:flex; flex-wrap:nowrap;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    scrollbar-width:none;
+  }
+  .strip::-webkit-scrollbar{display:none}
+
+  .frame{
+    flex:0 0 100vw; height:100vh;
+    scroll-snap-align:start;
+    position:relative;
+    padding:120px var(--frame-pad) 100px;
+    display:flex;
+    overflow:hidden;
+  }
+  .frame::after{
+    /* perforation rail at top — film strip motif */
+    content:"";
+    position:absolute; left:0; right:0; top:90px;
+    height:8px;
+    background-image:radial-gradient(circle, rgba(255,255,255,.18) 2.5px, transparent 3px);
+    background-size:28px 8px;
+    background-repeat:repeat-x;
+    background-position:0 50%;
+    opacity:.5;
+    pointer-events:none;
+  }
+  .frame-tag{
+    position:absolute; top:120px; right:var(--frame-pad);
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--mute);
+  }
+  .frame-tag .hi{color:var(--vis); margin-right:8px}
+
+  /* common type */
+  .display{
+    font-family:var(--display); font-weight:300;
+    letter-spacing:-.04em; line-height:.92;
+    color:#fff;
+  }
+  .mono{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--mute)}
+  .mono.hi{color:var(--vis)}
+  .body{
+    font-family:var(--display); font-weight:400; font-size:17px; line-height:1.55; color:#cfceea;
+    max-width:54ch;
+  }
+  .lead{
+    font-family:var(--display); font-weight:400; font-size:clamp(18px, 1.4vw, 22px); line-height:1.5;
+    color:#fff; max-width:54ch; letter-spacing:-.005em;
+  }
+
+  /* ============ FRAME 01 — COVER ============ */
+  .f-cover{
+    align-items:flex-end;
+    background:
+      radial-gradient(circle at 80% 30%, rgba(60,255,147,.06), transparent 55%),
+      var(--ink);
+  }
+  .cover-wrap{
+    width:100%;
+    display:flex; flex-direction:column; gap:48px;
+    align-items:flex-start;
+  }
+  .cover-title{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(48px, 9vw, 132px);
+    line-height:1; letter-spacing:-.04em;
+    color:#fff;
+    width:100%;
+    overflow-wrap:break-word;
+  }
+  .cover-title .ln{
+    display:block; overflow:hidden;
+    padding-bottom:.2em;        /* room for descenders (g, p, y) */
+    line-height:1;
+  }
+  .cover-title .ln > span{display:inline-block; transform:translateY(110%); transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .strip[data-active="0"] .cover-title .ln > span,
+  .f-cover.in .cover-title .ln > span{transform:none}
+  .cover-title .ln:nth-child(2) > span{transition-delay:.1s}
+  .cover-title .ln:nth-child(2){color:var(--vis); font-style:italic; font-weight:400}
+  .cover-meta{
+    width:100%;
+    display:flex; flex-direction:row; flex-wrap:wrap; gap:14px 36px;
+    padding-top:24px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--mute);
+    align-items:baseline;
+  }
+  .cover-meta .sig{
+    font-family:var(--display); font-weight:500; font-size:13px; letter-spacing:.02em;
+    color:#fff; text-transform:none; margin-left:auto;
+  }
+  .cover-axis{
+    position:absolute; left:var(--frame-pad); top:50%; transform:translateY(-50%);
+    width:1px; height:60%; background:linear-gradient(to bottom, transparent, var(--line-2), transparent);
+  }
+
+  /* ============ FRAME 02 — RENAMING ============ */
+  .f-rename{
+    align-items:center; justify-content:center;
+    background:var(--ink);
+  }
+  .rename-block{
+    display:flex; flex-direction:column; align-items:center; gap:48px;
+    width:100%;
+  }
+  .rename-line{
+    display:flex; align-items:baseline; justify-content:center; flex-wrap:wrap;
+    gap:clamp(20px, 4vw, 64px);
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(40px, 8vw, 112px); letter-spacing:-.04em; line-height:.95;
+    text-align:center;
+  }
+  .rename-line .from{
+    color:var(--mute); position:relative;
+  }
+  .rename-line .from::after{
+    content:""; position:absolute; left:-4%; right:-4%; top:55%;
+    height:4px; background:var(--mute);
+    transform:scaleX(0); transform-origin:left center;
+    transition:transform 1s cubic-bezier(.2,.7,.2,1) .4s;
+  }
+  .strip[data-active="1"] .rename-line .from::after{transform:scaleX(1)}
+  .rename-line .arrow{
+    font-family:var(--mono); font-weight:400; font-size:clamp(22px, 2.5vw, 32px);
+    color:var(--vis); position:relative; top:-.2em; letter-spacing:.05em;
+    opacity:0; transform:translateX(-10px);
+    transition:opacity .8s ease 1s, transform .8s ease 1s;
+  }
+  .strip[data-active="1"] .rename-line .arrow{opacity:1; transform:none}
+  .rename-line .to{
+    color:#fff; position:relative; padding:0 .04em;
+    font-style:italic; font-weight:400;
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 1.4s, transform 1s ease 1.4s;
+  }
+  .rename-line .to::after{
+    content:""; position:absolute; left:.04em; right:.04em; bottom:.05em;
+    height:8px; background:var(--vis); z-index:-1;
+    transform:scaleX(0); transform-origin:left center;
+    transition:transform 1s cubic-bezier(.2,.7,.2,1) 2s;
+  }
+  .strip[data-active="1"] .rename-line .to{opacity:1; transform:none}
+  .strip[data-active="1"] .rename-line .to::after{transform:scaleX(1)}
+
+  .rename-cap{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px;
+    width:min(720px, 100%);
+    font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--mute);
+  }
+  .rename-cap::before, .rename-cap::after{content:""; height:1px; background:var(--line)}
+  .rename-cap span{color:#fff}
+  .rename-foot{
+    margin-top:24px; max-width:60ch; text-align:center;
+    color:#cfceea;
+  }
+
+  /* ============ FRAME 03 — PROPOSITION ============ */
+  .f-prop{
+    align-items:stretch;
+    background:linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
+  }
+  .prop-wrap{
+    width:100%; display:flex; flex-direction:column; justify-content:center; gap:clamp(40px, 5vw, 72px);
+  }
+  .prop-quote{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(32px, 5.2vw, 88px); line-height:1; letter-spacing:-.035em;
+    color:#fff; max-width:22ch;
+  }
+  .prop-quote em{
+    font-style:italic; color:var(--vis); font-weight:400; position:relative;
+  }
+  .prop-pillars{
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    border-top:1px solid var(--line);
+  }
+  .pillar{
+    padding:28px 28px 24px 0;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; gap:14px;
+    transition:background .35s ease;
+    position:relative;
+  }
+  .pillar:last-child{border-right:0; padding-right:0}
+  .pillar::before{
+    content:""; position:absolute; left:0; top:-1px; width:0; height:2px;
+    background:var(--vis); transition:width .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .pillar:hover::before{width:60%}
+  .pillar .pn{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--vis);
+  }
+  .pillar .ph{
+    font-family:var(--display); font-weight:500; font-size:18px; letter-spacing:-.005em; color:#fff;
+    line-height:1.15;
+  }
+  .pillar .pb{
+    font-family:var(--display); font-weight:400; font-size:14px; line-height:1.55; color:#a8a7c5;
+  }
+
+  /* ============ FRAME 04 — PRACTICE (numbered rows) ============ */
+  .f-practice{
+    align-items:center;
+    background:var(--ink);
+  }
+  .practice-wrap{width:100%}
+  .practice-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    margin-bottom:32px; flex-wrap:wrap;
+  }
+  .practice-head h2{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(32px, 4.4vw, 64px); letter-spacing:-.03em; line-height:.95;
+    max-width:18ch;
+  }
+  .practice-list{
+    border-top:1px solid var(--line);
+  }
+  .prow{
+    display:grid;
+    grid-template-columns:60px 220px 1.4fr 1.4fr;
+    gap:24px; align-items:baseline;
+    padding:18px 0;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:padding-left .35s ease, background .35s ease;
+    position:relative;
+  }
+  .prow::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:0;
+    background:var(--vis); transition:width .35s ease;
+  }
+  .prow:hover{padding-left:18px; background:rgba(60,255,147,.05)}
+  .prow:hover::before{width:3px}
+  .prow .pn{font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--vis)}
+  .prow .ph{
+    font-family:var(--display); font-weight:500; font-size:clamp(20px, 1.8vw, 26px);
+    line-height:1.1; letter-spacing:-.01em; color:#fff;
+  }
+  .prow .pb{font-family:var(--display); font-weight:400; font-size:14.5px; line-height:1.55; color:#a8a7c5; max-width:50ch}
+  .prow .ptags{
+    display:flex; flex-wrap:wrap; gap:6px 8px;
+  }
+  .prow .ptag{
+    font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:#cfceea; padding:4px 8px; border:1px solid var(--line-2);
+    border-radius:2px;
+    transition:border-color .3s ease, color .3s ease;
+  }
+  .prow:hover .ptag{border-color:var(--vis); color:#fff}
+
+  /* ============ FRAME 05 — ENGAGEMENTS (horizontal scroller within frame) ============ */
+  .f-engage{
+    align-items:center;
+    background:var(--ink-2);
+    padding-right:0;
+  }
+  .engage-wrap{width:100%; display:flex; flex-direction:column; gap:36px}
+  .engage-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  }
+  .engage-head h2{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(36px, 5vw, 72px); letter-spacing:-.03em; line-height:.95;
+  }
+  .engage-rail{
+    display:flex; gap:18px;
+    overflow-x:auto; overflow-y:hidden;
+    padding-bottom:16px; padding-right:var(--frame-pad);
+    scrollbar-width:thin; scrollbar-color: var(--line-2) transparent;
+  }
+  .engage-rail::-webkit-scrollbar{height:4px}
+  .engage-rail::-webkit-scrollbar-thumb{background:var(--line-2); border-radius:2px}
+  .eg{
+    flex:0 0 320px;
+    aspect-ratio: auto;
+    height:380px;
+    position:relative; overflow:hidden;
+    background:var(--ink-3);
+    border:1px solid var(--line);
+    transition:transform .5s cubic-bezier(.2,.7,.2,1), border-color .35s ease;
+  }
+  .eg:hover{transform:translateY(-6px); border-color:var(--vis)}
+  .eg img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    filter:none;
+    transition:transform 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .eg:hover img{transform:scale(1.04)}
+  .eg::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:42%;
+    background:linear-gradient(to top, rgba(13,12,41,.85) 0%, rgba(13,12,41,.55) 35%, rgba(13,12,41,0) 100%);
+    pointer-events:none;
+  }
+  .eg .ix{
+    position:absolute; top:14px; left:14px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--vis);
+    z-index:2;
+    text-shadow:0 1px 6px rgba(13,12,41,.55);
+  }
+  .eg .meta{
+    position:absolute; left:18px; right:18px; bottom:16px; z-index:2;
+  }
+  .eg .meta .name{
+    font-family:var(--display); font-weight:400; font-size:22px; line-height:1.1; letter-spacing:-.01em;
+    color:#fff;
+  }
+  .eg .meta .cls{
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--mute); text-transform:uppercase;
+    margin-top:6px;
+  }
+
+  /* ============ FRAME 06 — HANDS ============ */
+  .f-hands{
+    align-items:center;
+    background:var(--ink);
+  }
+  .hands-wrap{width:100%}
+  .hands-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:36px; flex-wrap:wrap;
+  }
+  .hands-head h2{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(36px, 5vw, 72px); letter-spacing:-.03em; line-height:.95;
+    max-width:14ch;
+  }
+  .hands-row{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
+  }
+  .hand{
+    position:relative; aspect-ratio:3/4;
+    background:var(--ink-2); border:1px solid var(--line); overflow:hidden;
+    cursor:pointer;
+    transition:border-color .4s ease;
+  }
+  .hand img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top;
+    filter:none;
+    transition:transform 1.4s cubic-bezier(.2,.7,.2,1);
+  }
+  .hand:hover{border-color:var(--vis)}
+  .hand:hover img{transform:scale(1.03)}
+  .hand::before{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:32%;
+    background:linear-gradient(to top, rgba(13,12,41,.82) 0%, rgba(13,12,41,.45) 40%, rgba(13,12,41,0) 100%);
+    z-index:1; pointer-events:none;
+  }
+  .hand .ix{
+    position:absolute; top:14px; left:14px; z-index:2;
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--vis);
+    text-shadow:0 1px 6px rgba(13,12,41,.55);
+  }
+  .hand .info{
+    position:absolute; left:16px; right:16px; bottom:14px; z-index:2;
+    color:#fff;
+  }
+  .hand .info .name{
+    font-family:var(--display); font-weight:500; font-size:18px; letter-spacing:-.01em; line-height:1.1;
+  }
+  .hand .info .role{
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--vis); margin-top:6px;
+  }
+
+  /* ============ FRAME 07 — BEGIN ============ */
+  .f-begin{
+    align-items:center;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(60,255,147,.08), transparent 50%),
+      var(--ink);
+  }
+  .begin-wrap{
+    width:100%;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:clamp(40px, 8vw, 120px);
+    align-items:center;
+  }
+  .begin-l h2{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(48px, 7vw, 112px); letter-spacing:-.04em; line-height:.92;
+  }
+  .begin-l h2 em{font-style:italic; color:var(--vis); font-weight:400}
+  .mail-link{
+    display:inline-block; margin-top:48px;
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(24px, 3vw, 44px); letter-spacing:-.02em; color:#fff;
+    border-bottom:2px solid var(--vis); padding-bottom:6px;
+    transition:padding .4s ease, color .4s ease;
+  }
+  .mail-link:hover{padding-bottom:14px; color:var(--vis)}
+  .begin-r{
+    display:grid; grid-template-columns:1fr 1fr; gap:28px 24px;
+    border-top:1px solid var(--line); padding-top:32px;
+  }
+  .info-cell .lbl{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--vis); margin-bottom:10px;
+  }
+  .info-cell .val{
+    font-family:var(--display); font-weight:400; font-size:16px; line-height:1.45; color:#fff; letter-spacing:-.005em;
+  }
+  .info-cell .val em{font-style:italic; color:#cfceea}
+
+  /* ============ FRAME 08 — COLOPHON ============ */
+  .f-end{
+    align-items:flex-end; justify-content:space-between;
+    flex-direction:column;
+    background:var(--ink);
+  }
+  .end-top{display:flex; justify-content:space-between; align-items:flex-start; width:100%; gap:24px}
+  .end-mark{
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(80px, 14vw, 200px); letter-spacing:-.05em; line-height:.85;
+    color:#fff;
+  }
+  .end-mark .pen{color:var(--vis)}
+  .end-strap{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--mute);
+    text-align:right;
+  }
+  .end-bottom{
+    width:100%; display:grid; grid-template-columns:repeat(3, 1fr); gap:32px;
+    border-top:1px solid var(--line); padding-top:28px;
+    align-items:flex-end;
+  }
+  .end-bottom h4{
+    font-family:var(--mono); font-size:10px; font-weight:400; letter-spacing:.28em; text-transform:uppercase; color:var(--vis); margin-bottom:12px;
+  }
+  .end-bottom ul{list-style:none; display:flex; flex-direction:column; gap:6px; font-size:14px; color:#cfceea}
+
+  /* ============ Medium (1280–881) — tune type to fit ============ */
+  @media (max-width:1280px) and (min-width:881px){
+    .cover-title{font-size:clamp(56px, 8vw, 104px)}
+    .rename-line{font-size:clamp(40px, 7vw, 88px); gap:clamp(18px, 3vw, 48px)}
+  }
+
+  /* ============ Tablet (1024–881) — stack rename, tune practice ============ */
+  @media (max-width:1024px) and (min-width:881px){
+    :root{ --frame-pad:48px }
+    .cover-title{font-size:clamp(48px, 7.5vw, 88px)}
+    .rename-line{flex-direction:column; gap:14px; font-size:clamp(48px, 8vw, 72px)}
+    .rename-line .arrow{transform:rotate(90deg); top:0}
+    .prop-quote{font-size:clamp(28px, 5vw, 56px)}
+    .prop-pillars{grid-template-columns:repeat(2, 1fr)}
+    .pillar{border-bottom:1px solid var(--line); padding-bottom:18px}
+    .pillar:nth-child(2n){border-right:0; padding-right:0}
+    .prow{grid-template-columns:50px 180px 1fr; gap:18px}
+    .prow .ptags{grid-column:2 / 4; margin-top:6px}
+    .hands-row{gap:14px}
+    .begin-l h2{font-size:clamp(40px, 6vw, 72px)}
+  }
+
+  /* ============ MOBILE — purpose-built, not a fallback ============ */
+  /* Mobile CTA bar — only shown on small screens */
+  .mobile-cta{display:none}
+
+  @media (max-width:880px){
+    html,body{overflow:visible; overflow-y:auto; height:auto; -webkit-overflow-scrolling:touch}
+    body{font-size:15px; overscroll-behavior:auto; touch-action:auto}
+    .strip{height:auto; flex-direction:column; overflow:visible; scroll-snap-type:none}
+    .frame{
+      display:block;             /* override desktop flex — was making frame-tag and content sit side-by-side */
+      flex:0 0 auto; height:auto; min-height:auto;
+      padding:80px 20px 56px;
+      scroll-snap-align:none;
+    }
+    /* Neutralise desktop centering on every frame */
+    .f-cover, .f-rename, .f-prop, .f-practice, .f-engage, .f-hands, .f-begin, .f-end{
+      display:block;
+      align-items:initial; justify-content:initial;
+      flex-direction:initial;
+    }
+    /* Ensure all main content wrappers fill width */
+    .cover-wrap, .rename-block, .prop-wrap, .practice-wrap, .engage-wrap, .hands-wrap, .begin-wrap{
+      width:100%; max-width:none;
+    }
+    .frame + .frame{border-top:1px solid var(--line)}
+    .frame::after{display:none}
+    .frame-tag{
+      position:relative; top:auto; right:auto;
+      display:inline-block; margin-bottom:20px;
+      font-size:10px; letter-spacing:.22em;
+    }
+    .frame-tag .hi{display:none}    /* drop the cinema "01." numbering on mobile */
+
+    /* HUD: simplified top strap, hide bottom dots */
+    .hud{position:relative; pointer-events:none}
+    .hud-top{
+      position:fixed; top:0; left:0; right:0;
+      padding:12px 16px;
+      background:rgba(13,12,41,.92);
+      backdrop-filter:saturate(1.1) blur(10px);
+      -webkit-backdrop-filter:saturate(1.1) blur(10px);
+      border-bottom:1px solid var(--line);
+      pointer-events:auto; z-index:50;
+    }
+    .brand{font-size:16px}
+    .brand small{display:none}
+    .frame-counter{display:none}     /* "01 / 08" doesn't make sense vertically */
+    .progress{position:fixed; left:0; right:0; top:46px; height:1px}
+    .progress::after{height:2px}
+    .hud-bottom{display:none}
+
+    /* Sticky bottom CTA — always-visible email tap */
+    .mobile-cta{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      position:fixed; left:0; right:0; bottom:0; z-index:55;
+      padding:12px 16px;
+      background:rgba(13,12,41,.94);
+      backdrop-filter:saturate(1.1) blur(10px);
+      -webkit-backdrop-filter:saturate(1.1) blur(10px);
+      border-top:1px solid var(--line);
+    }
+    .mobile-cta .label{
+      font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--mute);
+    }
+    .mobile-cta .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:var(--display); font-weight:500; font-size:14px; letter-spacing:-.005em;
+      background:var(--vis); color:var(--ink);
+      padding:11px 16px; border-radius:2px;
+      min-height:44px;             /* tap target */
+    }
+    .mobile-cta .btn .arr{
+      display:inline-block; font-family:var(--mono); font-size:14px; line-height:1;
+    }
+    /* Add bottom padding so sticky CTA never covers the last line */
+    body{padding-bottom:68px}
+
+    /* ===== Cover ===== */
+    .f-cover{padding-top:96px; align-items:flex-start}
+    .cover-wrap{flex-direction:column; gap:24px; align-items:flex-start}
+    .cover-title{
+      font-size:clamp(34px, 10vw, 52px);
+      line-height:1.02; letter-spacing:-.035em;
+      word-break:break-word; overflow-wrap:anywhere;
+      width:100%;
+    }
+    .cover-title .ln{padding-bottom:.18em}
+    .cover-title .ln > span{transform:none}
+    .cover-meta{
+      text-align:left; flex-direction:column; gap:10px;
+      padding-top:18px; border-top:1px solid var(--line);
+    }
+    .cover-meta .sig{margin-left:0}
+    .cover-axis{display:none}
+
+    /* ===== Renaming — left-aligned, full-width on mobile ===== */
+    .f-rename{
+      padding-top:80px; padding-bottom:48px;
+      align-items:flex-start; justify-content:flex-start;
+    }
+    .rename-block{
+      gap:28px; width:100%;
+      align-items:flex-start;
+    }
+    .rename-line{
+      flex-direction:row; flex-wrap:wrap; gap:10px 14px;
+      align-items:baseline; justify-content:flex-start;
+      width:100%; text-align:left;
+      font-size:clamp(36px, 11vw, 56px);
+    }
+    .rename-line .from{color:var(--mute)}
+    .rename-line .from::after{transform:scaleX(1)}
+    .rename-line .arrow{
+      transform:none; top:0; opacity:1;
+      font-size:20px; padding:0;
+      align-self:center;
+    }
+    .rename-line .to{opacity:1; transform:none}
+    .rename-line .to::after{transform:scaleX(1)}
+    .rename-cap{
+      grid-template-columns:1fr; gap:0;
+      width:100%; text-align:left;
+    }
+    .rename-cap::before, .rename-cap::after{display:none}
+    .rename-cap span{font-size:10px}
+    .rename-foot{
+      font-size:14.5px; line-height:1.55;
+      padding:0; text-align:left;
+      max-width:none; width:100%; margin:0;
+    }
+
+    /* ===== Proposition ===== */
+    .prop-wrap{gap:32px}
+    .prop-quote{
+      font-size:clamp(26px, 8.5vw, 38px);
+      line-height:1.08; letter-spacing:-.025em; max-width:none;
+    }
+    .prop-pillars{grid-template-columns:1fr; border-top:1px solid var(--line)}
+    .pillar{
+      border-right:0; border-bottom:1px solid var(--line);
+      padding:18px 0; gap:8px;
+    }
+    .pillar:last-child{border-bottom:0}
+    .pillar::before{display:none}
+    .pillar .ph{font-size:16px}
+    .pillar .pb{font-size:14px}
+
+    /* ===== Practice ===== */
+    .practice-head{margin-bottom:24px}
+    .practice-head h2{font-size:clamp(28px, 8vw, 38px)}
+    .practice-head .mono{font-size:10px}
+    .prow{
+      grid-template-columns:36px 1fr;
+      gap:6px 12px;
+      padding:18px 0;
+      cursor:default;
+    }
+    .prow .pn{font-size:10px; align-self:start; padding-top:2px}
+    .prow .ph{font-size:19px; line-height:1.15}
+    .prow .pb{grid-column:2 / 3; font-size:14px; line-height:1.5; margin-top:4px}
+    .prow .ptags{grid-column:2 / 3; margin-top:10px; gap:5px 6px}
+    .prow .ptag{font-size:9px; padding:3px 6px; letter-spacing:.12em}
+    .prow:hover{padding-left:0; background:transparent}
+    .prow:hover::before{display:none}
+    .prow:hover .ptag{border-color:var(--line-2); color:#cfceea}
+
+    /* ===== Engagements: convert horizontal rail to vertical grid ===== */
+    .engage-head{margin-bottom:8px}
+    .engage-head h2{font-size:clamp(28px, 8vw, 38px)}
+    .engage-head .mono{font-size:10px}
+    .engage-rail{
+      display:grid; grid-template-columns:1fr 1fr; gap:10px;
+      overflow:visible; padding:0;
+    }
+    .eg{
+      flex:initial; height:auto; aspect-ratio:4/5;
+      width:100%;
+    }
+    .eg:hover{transform:none}
+    .eg .meta .name{font-size:15px}
+    .eg .meta .cls{font-size:9px; letter-spacing:.18em}
+    .eg .ix{font-size:9px}
+
+    /* ===== Hands ===== */
+    .hands-head{margin-bottom:8px; flex-direction:column; align-items:flex-start; gap:10px}
+    .hands-head h2{font-size:clamp(28px, 8vw, 38px)}
+    .hands-head .mono{font-size:10px}
+    .hands-row{grid-template-columns:1fr 1fr; gap:12px}
+    .hand{aspect-ratio:3/4}
+    .hand .info{left:12px; right:12px; bottom:12px}
+    .hand .info .name{font-size:15px}
+    .hand .info .role{font-size:9px; letter-spacing:.18em; margin-top:4px}
+    .hand .info .bio{
+      max-height:none; opacity:1; margin-top:8px;
+      font-size:12px; line-height:1.45;
+    }
+
+    /* ===== Begin (contact) ===== */
+    .f-begin{padding-bottom:48px}
+    .begin-wrap{grid-template-columns:1fr; gap:32px}
+    .begin-l h2{font-size:clamp(36px, 11vw, 56px); line-height:.98}
+    .mail-link{
+      display:inline-block;
+      font-size:clamp(18px, 5.2vw, 26px); margin-top:24px;
+      word-break:break-all; line-height:1.2;
+      padding:8px 0;
+      min-height:44px;
+    }
+    .begin-r{grid-template-columns:1fr 1fr; gap:20px 16px}
+    .info-cell .lbl{font-size:9px; letter-spacing:.22em; margin-bottom:6px}
+    .info-cell .val{font-size:14px; line-height:1.4}
+
+    /* ===== End ===== */
+    .f-end{justify-content:flex-start; gap:24px; padding-bottom:48px}
+    .end-top{flex-direction:column; gap:14px; align-items:flex-start}
+    .end-mark{font-size:clamp(56px, 18vw, 80px); line-height:.95}
+    .end-strap{text-align:left; font-size:10px}
+    .end-bottom{grid-template-columns:1fr; gap:24px}
+    .end-bottom h4{margin-bottom:8px}
+    .end-bottom ul{font-size:13px; gap:5px}
+  }
+
+  /* ============ Phone — tighter still ============ */
+  @media (max-width:480px){
+    .frame{padding:72px 18px 48px}
+    .f-cover{padding-top:88px}
+    .cover-title{font-size:clamp(30px, 11vw, 44px)}
+    .rename-line{font-size:clamp(36px, 16vw, 56px)}
+    .prop-quote{font-size:clamp(24px, 9vw, 34px)}
+    .engage-rail{grid-template-columns:1fr; gap:10px}
+    .hands-row{grid-template-columns:1fr 1fr}
+    .begin-r{grid-template-columns:1fr; gap:18px}
+    .begin-l h2{font-size:clamp(32px, 12vw, 48px)}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important; animation:none !important}
+    .cover-title .ln > span{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile sticky CTA -->
+<div class="mobile-cta" aria-hidden="false">
+  <span class="label">Astutely &middot; Holywood</span>
+  <a class="btn" href="mailto:hello@astutelyagency.com">Start a conversation <span class="arr">&rarr;</span></a>
+</div>
+
+<!-- HUD -->
+<div class="hud" aria-hidden="false">
+  <div class="hud-top">
+    <a href="#f1" class="brand"><span class="pip"></span> Astutely <small>Holywood &middot; 2026</small></a>
+    <div class="frame-counter"><span class="now" id="now">01</span><span class="total">/&nbsp;08</span></div>
+  </div>
+  <div class="progress" id="progress"></div>
+  <div class="hud-bottom">
+    <div class="hint"><kbd>←</kbd><kbd>→</kbd> &nbsp; or scroll</div>
+    <nav class="dots" id="dots">
+      <a href="#f1" data-i="0" class="active"></a>
+      <a href="#f2" data-i="1"></a>
+      <a href="#f3" data-i="2"></a>
+      <a href="#f4" data-i="3"></a>
+      <a href="#f5" data-i="4"></a>
+      <a href="#f6" data-i="5"></a>
+      <a href="#f7" data-i="6"></a>
+      <a href="#f8" data-i="7"></a>
+    </nav>
+    <div class="hint">Sharp thinking, beautifully applied.</div>
+  </div>
+</div>
+
+<!-- FILM STRIP -->
+<div class="strip" id="strip" data-active="0">
+
+  <!-- FRAME 01 — COVER -->
+  <section class="frame f-cover" id="f1">
+    <div class="cover-axis" aria-hidden="true"></div>
+    <span class="frame-tag"><span class="hi">01.</span> Cover</span>
+    <div class="cover-wrap">
+      <div class="cover-title">
+        <span class="ln"><span>Sharp thinking,</span></span>
+        <span class="ln"><span>beautifully applied.</span></span>
+      </div>
+      <div class="cover-meta">
+        <span>2026</span>
+        <span>Holywood &middot; NI</span>
+        <span class="sig">Astutely &mdash; formerly AY Studio</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 02 — RENAMING -->
+  <section class="frame f-rename" id="f2">
+    <span class="frame-tag"><span class="hi">02.</span> The renaming</span>
+    <div class="rename-block">
+      <div class="rename-line">
+        <span class="from">AY&nbsp;Studio</span>
+        <span class="arrow">———&gt;</span>
+        <span class="to">Astutely.</span>
+      </div>
+      <div class="rename-cap"><span>&nbsp;</span><span>Same hand &middot; sharper pencil</span><span>&nbsp;</span></div>
+      <p class="rename-foot body">After nine years as AY Studio we have changed our name &mdash; not the team, not the people, not the work. The new name reflects how we already think: carefully, clearly and with intent. <span style="color:var(--vis)">Astute.</span> Considered. Clear-eyed about what work needs to do.</p>
+    </div>
+  </section>
+
+  <!-- FRAME 03 — PROPOSITION -->
+  <section class="frame f-prop" id="f3">
+    <span class="frame-tag"><span class="hi">03.</span> The proposition</span>
+    <div class="prop-wrap">
+      <h2 class="prop-quote">
+        Most brands do not need more marketing. They need <em>better&nbsp;decisions.</em>
+      </h2>
+      <div class="prop-pillars">
+        <div class="pillar">
+          <span class="pn">01 / Clarity first</span>
+          <span class="ph">Get the brief right before anything moves.</span>
+          <p class="pb">Every project goes through a clarity check &mdash; positioning, audience and message agreed before execution.</p>
+        </div>
+        <div class="pillar">
+          <span class="pn">02 / Diagnosis</span>
+          <span class="ph">Understand the business before recommending anything.</span>
+          <p class="pb">We don&rsquo;t template our thinking. Diagnosis before prescription, every time.</p>
+        </div>
+        <div class="pillar">
+          <span class="pn">03 / Built to run</span>
+          <span class="ph">Senior team, hands-on, designed to last.</span>
+          <p class="pb">The people you meet are the people who do the work. Everything is structured for your team to own.</p>
+        </div>
+        <div class="pillar">
+          <span class="pn">04 / Calm authority</span>
+          <span class="ph">Considered counsel without manufactured urgency.</span>
+          <p class="pb">Quiet iteration over loud reinventions. Useful work, on schedule, in plain language.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 04 — PRACTICE -->
+  <section class="frame f-practice" id="f4">
+    <span class="frame-tag"><span class="hi">04.</span> The practice</span>
+    <div class="practice-wrap">
+      <div class="practice-head">
+        <h2>Five disciplines.<br/>One senior&nbsp;studio.</h2>
+        <p class="mono">End-to-end digital, under one&nbsp;roof.</p>
+      </div>
+      <div class="practice-list">
+        <div class="prow">
+          <span class="pn">01</span>
+          <span class="ph">Brand &amp; Strategy</span>
+          <p class="pb">Positioning, identity and the strategic foundation that makes every downstream investment significantly more effective.</p>
+          <div class="ptags">
+            <span class="ptag">Positioning</span>
+            <span class="ptag">Identity</span>
+            <span class="ptag">Naming</span>
+            <span class="ptag">Messaging</span>
+            <span class="ptag">Tone of voice</span>
+            <span class="ptag">Brand narrative</span>
+          </div>
+        </div>
+        <div class="prow">
+          <span class="pn">02</span>
+          <span class="ph">Web Design &amp; Build</span>
+          <p class="pb">Websites that communicate clearly, convert effectively, and give your team the control to keep them performing.</p>
+          <div class="ptags">
+            <span class="ptag">UX &amp; wireframing</span>
+            <span class="ptag">Visual design</span>
+            <span class="ptag">CMS</span>
+            <span class="ptag">Custom build</span>
+            <span class="ptag">E-commerce</span>
+            <span class="ptag">Landing pages</span>
+            <span class="ptag">Support</span>
+          </div>
+        </div>
+        <div class="prow">
+          <span class="pn">03</span>
+          <span class="ph">Digital Marketing</span>
+          <p class="pb">Marketing programmes that start with positioning and work outward &mdash; every channel serving a coherent strategy.</p>
+          <div class="ptags">
+            <span class="ptag">SEO</span>
+            <span class="ptag">Paid media</span>
+            <span class="ptag">Content strategy</span>
+            <span class="ptag">Email</span>
+            <span class="ptag">Audits</span>
+            <span class="ptag">Reporting</span>
+          </div>
+        </div>
+        <div class="prow">
+          <span class="pn">04</span>
+          <span class="ph">Content &amp; Creative</span>
+          <p class="pb">Photography, video, copy and campaigns produced with the clarity of message that makes the work actually perform.</p>
+          <div class="ptags">
+            <span class="ptag">Photography</span>
+            <span class="ptag">Video &amp; motion</span>
+            <span class="ptag">Copywriting</span>
+            <span class="ptag">Campaign creative</span>
+            <span class="ptag">Social</span>
+            <span class="ptag">Brand films</span>
+          </div>
+        </div>
+        <div class="prow">
+          <span class="pn">05</span>
+          <span class="ph">Systems &amp; Automation</span>
+          <p class="pb">The operational backbone that makes growth scalable &mdash; so the marketing keeps running long after launch.</p>
+          <div class="ptags">
+            <span class="ptag">CRM</span>
+            <span class="ptag">Automation</span>
+            <span class="ptag">Integrations</span>
+            <span class="ptag">Reporting</span>
+            <span class="ptag">Architecture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 05 — ENGAGEMENTS -->
+  <section class="frame f-engage" id="f5">
+    <span class="frame-tag"><span class="hi">05.</span> Selected engagements</span>
+    <div class="engage-wrap">
+      <div class="engage-head">
+        <h2>Recent work,<br/>in plain&nbsp;sight.</h2>
+        <p class="mono">Sport &middot; Charity &middot; Civic &middot; Growing&nbsp;business</p>
+      </div>
+      <div class="engage-rail" id="rail">
+        <a class="eg" href="#"><span class="ix">01</span><img src="https://bunny-wp-pullzone-08ffyrom42.b-cdn.net/wp-content/uploads/2026/03/Glentoran-Winner-2-copy-scaled.jpg" alt="Glentoran FC" loading="lazy"/><div class="meta"><div class="name">Glentoran FC</div><div class="cls">Web · Marketing · Systems</div></div></a>
+        <a class="eg" href="#"><span class="ix">02</span><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/5dc6b374-e773-4d00-b502-e4edf60c7508/RK_Images_1920x1080_3.jpg" alt="R Kings Competitions" loading="lazy"/><div class="meta"><div class="name">R Kings Competitions</div><div class="cls">Strategy · Platform · Scale</div></div></a>
+        <a class="eg" href="#"><span class="ix">03</span><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/ead76eb7-9c03-415b-b6af-5d11cc7ae0de/AgeNI_Laptop-site-iPad_Man.png" alt="Age NI" loading="lazy"/><div class="meta"><div class="name">Age NI</div><div class="cls">SEO · Digital · Charity</div></div></a>
+        <a class="eg" href="#"><span class="ix">04</span><img src="https://seacourtprintworkshop.com/wp-content/uploads/2025/01/bo9rlmy2hkhkjp5ermbt-1024x683.webp" alt="Seacourt Print Workshop" loading="lazy"/><div class="meta"><div class="name">Seacourt Print Workshop</div><div class="cls">Brand · Web · Arts</div></div></a>
+        <a class="eg" href="#"><span class="ix">05</span><img src="https://theaviaryfloral.com/cdn/shop/files/Banner003_1000x.jpg" alt="The Aviary Floral" loading="lazy"/><div class="meta"><div class="name">The Aviary Floral</div><div class="cls">Brand · Content · Floral</div></div></a>
+        <a class="eg" href="#"><span class="ix">06</span><img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/1714759123787-Q837421115GGD0B41M8E/KBI_CaseStudy_Visuals_master59.png" alt="Kickboxing Ireland" loading="lazy"/><div class="meta"><div class="name">Kickboxing Ireland</div><div class="cls">Brand · Digital · Sport</div></div></a>
+        <a class="eg" href="#"><span class="ix">07</span><img src="https://bunny-wp-pullzone-xm3uwe2lhs.b-cdn.net/wp-content/uploads/2024/04/PEB-Edited-scaled.jpg" alt="Camborne Town Council" loading="lazy"/><div class="meta"><div class="name">Camborne Town Council</div><div class="cls">Web · Digital · Civic</div></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 06 — HANDS -->
+  <section class="frame f-hands" id="f6">
+    <span class="frame-tag"><span class="hi">06.</span> The hands</span>
+    <div class="hands-wrap">
+      <div class="hands-head">
+        <h2>Senior thinking.<br/>Hands-on delivery.</h2>
+        <p class="mono">A small team. The people you meet do the&nbsp;work.</p>
+      </div>
+      <div class="hands-row">
+        <div class="hand">
+          <img src="img-robert-annett.jpg" alt="Robert Annett" loading="lazy"/>
+          <span class="ix">01</span>
+          <div class="info">
+            <div class="name">Robert Annett</div>
+            <div class="role">Managing&nbsp;Partner</div>
+          </div>
+        </div>
+        <div class="hand">
+          <img src="https://images.squarespace-cdn.com/content/v1/6259deb1c94dc51a21935ea8/d0231026-18fe-4c73-9456-cc9daf750036/AY_RyanYoung-Pink.jpg" alt="Ryan Young" loading="lazy"/>
+          <span class="ix">02</span>
+          <div class="info">
+            <div class="name">Ryan Young</div>
+            <div class="role">Creative Director</div>
+          </div>
+        </div>
+        <div class="hand">
+          <img src="img-russell-lever.jpeg" alt="Russell Lever" loading="lazy"/>
+          <span class="ix">03</span>
+          <div class="info">
+            <div class="name">Russell Lever</div>
+            <div class="role">PR &amp; Marketing Director</div>
+          </div>
+        </div>
+        <div class="hand">
+          <img src="https://placeholdit.com/1080x1080/dddddd/999999" alt="Garry McNally" loading="lazy"/>
+          <span class="ix">04</span>
+          <div class="info">
+            <div class="name">Garry McNally</div>
+            <div class="role">Senior Web Developer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 07 — BEGIN -->
+  <section class="frame f-begin" id="f7">
+    <span class="frame-tag"><span class="hi">07.</span> A conversation</span>
+    <div class="begin-wrap">
+      <div class="begin-l">
+        <h2>Ready to <em>sharpen</em><br/>what comes&nbsp;next?</h2>
+        <a class="mail-link" href="mailto:hello@astutelyagency.com">hello@astutelyagency.com &nbsp;&rarr;</a>
+      </div>
+      <div class="begin-r">
+        <div class="info-cell">
+          <div class="lbl">Studio</div>
+          <div class="val">Second Floor, 144 High&nbsp;Street,<br/>Holywood, BT18&nbsp;9HS</div>
+        </div>
+        <div class="info-cell">
+          <div class="lbl">For new work</div>
+          <div class="val"><em>Briefs, intros and the quietly ambitious welcome.</em></div>
+        </div>
+        <div class="info-cell">
+          <div class="lbl">Hours</div>
+          <div class="val">Mon &mdash; Fri<br/>09:00 &mdash; 18:00</div>
+        </div>
+        <div class="info-cell">
+          <div class="lbl">Reply window</div>
+          <div class="val">Within two<br/>business days.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 08 — END / COLOPHON -->
+  <section class="frame f-end" id="f8">
+    <span class="frame-tag"><span class="hi">08.</span> End frame</span>
+    <div class="end-top">
+      <div class="end-mark">Astutely<span class="pen">.</span></div>
+      <div class="end-strap">Sharp thinking,<br/>beautifully applied.</div>
+    </div>
+    <div class="end-bottom">
+      <div>
+        <h4>Studio</h4>
+        <ul>
+          <li>Second Floor, 144 High St</li>
+          <li>Holywood, BT18 9HS</li>
+          <li>hello@astutelyagency.com</li>
+          <li>astutelyagency.com</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Frames</h4>
+        <ul>
+          <li><a href="#f1">01 Cover</a></li>
+          <li><a href="#f2">02 Renaming</a></li>
+          <li><a href="#f3">03 Proposition</a></li>
+          <li><a href="#f4">04 Practice</a></li>
+          <li><a href="#f5">05 Engagements</a></li>
+          <li><a href="#f6">Hands</a></li>
+          <li><a href="#f7">Conversation</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Studio</h4>
+        <ul>
+          <li>&copy; 2026 Astutely</li>
+          <li>Formerly AY Studio</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const strip = document.getElementById('strip');
+  const dots = Array.from(document.querySelectorAll('#dots a'));
+  const now = document.getElementById('now');
+  const progress = document.getElementById('progress');
+  const total = dots.length;
+  const isMobile = () => window.matchMedia('(max-width:880px)').matches;
+
+  function setActive(i){
+    strip.dataset.active = i;
+    now.textContent = String(i+1).padStart(2,'0');
+    dots.forEach((d,k)=>d.classList.toggle('active', k===i));
+  }
+
+  function setProgress(){
+    const max = strip.scrollWidth - strip.clientWidth;
+    const p = max > 0 ? (strip.scrollLeft / max) * 100 : 0;
+    progress.style.setProperty('--p', p + '%');
+    const i = Math.round((strip.scrollLeft / strip.clientWidth));
+    setActive(Math.max(0, Math.min(total-1, i)));
+  }
+
+  // Wheel = horizontal scroll — only attach on desktop. On mobile this is unused
+  // and a passive:false listener can interfere with native touch scrolling.
+  let rafQueued = false;
+  if (!isMobile()){
+    window.addEventListener('wheel', (e) => {
+      // If the cursor is over the inner engagements rail, let it scroll natively
+      const rail = document.getElementById('rail');
+      if (rail && rail.contains(e.target) && Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      strip.scrollLeft += delta * 1.4;
+    }, { passive:false });
+  }
+
+  // Keyboard
+  window.addEventListener('keydown', (e) => {
+    if (isMobile()) return;
+    const idx = parseInt(strip.dataset.active || '0', 10);
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){
+      e.preventDefault();
+      const next = Math.min(total-1, idx+1);
+      strip.scrollTo({ left: next * strip.clientWidth, behavior:'smooth' });
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){
+      e.preventDefault();
+      const prev = Math.max(0, idx-1);
+      strip.scrollTo({ left: prev * strip.clientWidth, behavior:'smooth' });
+    } else if (e.key === 'Home'){
+      e.preventDefault();
+      strip.scrollTo({ left: 0, behavior:'smooth' });
+    } else if (e.key === 'End'){
+      e.preventDefault();
+      strip.scrollTo({ left: (total-1) * strip.clientWidth, behavior:'smooth' });
+    }
+  });
+
+  // Dots — go to frame
+  dots.forEach(d => d.addEventListener('click', (e)=>{
+    if (isMobile()) return;
+    e.preventDefault();
+    const i = parseInt(d.dataset.i, 10);
+    strip.scrollTo({ left: i * strip.clientWidth, behavior:'smooth' });
+  }));
+
+  strip.addEventListener('scroll', () => {
+    if (rafQueued) return;
+    rafQueued = true;
+    requestAnimationFrame(()=>{ setProgress(); rafQueued = false; });
+  }, { passive:true });
+
+  // Mobile: track which frame is in view + drive progress
+  if (isMobile()){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if (en.isIntersecting){
+          const i = Array.from(strip.children).indexOf(en.target);
+          if (i >= 0) setActive(i);
+        }
+      });
+    }, { threshold:0.5 });
+    Array.from(strip.children).forEach(c => io.observe(c));
+
+    document.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progress.style.setProperty('--p', p + '%');
+    }, { passive:true });
+  } else {
+    setProgress();
+  }
+
+</script>
+</body>
+</html>

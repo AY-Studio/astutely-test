@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Astutely — Sharp thinking, beautifully applied.</title>
+<meta name="description" content="Astutely is a creative marketing agency for brands that need clearer direction, stronger ideas and work that feels as considered as it is effective." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --navy:#0a1730;          /* deep navy */
+    --navy-2:#0e1d3c;        /* slightly lighter */
+    --navy-3:#142654;        /* card surface */
+    --ink:#0a1730;
+    --paper:#f4f1ea;         /* warm off-white for contrast moments */
+    --line:rgba(255,255,255,.14);
+    --line-strong:rgba(255,255,255,.28);
+    --mute:#9aa6c2;          /* soft cool grey */
+    --vis:#c8ff3d;           /* high-vis brand green */
+    --vis-2:#d8ff66;
+
+    --serif:'Fraunces', 'Times New Roman', serif;
+    --sans:'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+
+    --max:1320px;
+    --pad: clamp(20px, 4vw, 56px);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{
+    background:var(--navy);
+    color:#eef1f8;
+    font-family:var(--sans);
+    font-weight:400;
+    font-size:16px;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--vis); color:var(--navy)}
+
+  a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+
+  .wrap{max-width:var(--max); margin:0 auto; padding-left:var(--pad); padding-right:var(--pad)}
+  section{position:relative; padding: clamp(96px, 13vw, 180px) 0}
+  .rule{height:1px; background:var(--line); border:0; margin:0}
+
+  /* Editorial labels */
+  .eyebrow{
+    font-family:var(--sans); font-size:11px; letter-spacing:.24em;
+    text-transform:uppercase; color:var(--vis);
+    display:inline-flex; align-items:center; gap:14px;
+  }
+  .eyebrow::before{
+    content:""; width:42px; height:1px; background:var(--vis); display:inline-block;
+  }
+  .num{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    color:var(--mute); font-size:13px; letter-spacing:.04em;
+  }
+
+  /* Headings */
+  h1,h2,h3{font-family:var(--serif); font-weight:300; letter-spacing:-.02em; line-height:1; margin:0; color:#fff}
+  h1{font-size:clamp(48px, 9vw, 152px); line-height:.95; letter-spacing:-.028em}
+  h2{font-size:clamp(36px, 5.5vw, 86px); line-height:1.02}
+  h3{font-size:clamp(22px, 2vw, 30px); letter-spacing:-.01em}
+
+  p{margin:0; max-width:62ch}
+  .lead{font-size:clamp(17px, 1.35vw, 21px); color:#eef1f8; line-height:1.55}
+  .body{font-size:16.5px; color:#cfd6e7; line-height:1.65}
+  .small{font-size:13px; color:var(--mute); letter-spacing:.02em}
+
+  /* NAV */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px var(--pad);
+    border-bottom:1px solid transparent;
+    transition:background .5s ease, backdrop-filter .5s ease, border-color .5s ease;
+  }
+  .nav.scrolled{
+    background:rgba(10,23,48,.78);
+    backdrop-filter:saturate(1.2) blur(12px);
+    -webkit-backdrop-filter:saturate(1.2) blur(12px);
+    border-bottom-color:var(--line);
+  }
+  .brand{
+    font-family:var(--serif); font-weight:400; font-size:20px; letter-spacing:-.01em;
+    display:inline-flex; align-items:baseline; gap:10px; color:#fff;
+  }
+  .brand .dot{
+    width:7px; height:7px; background:var(--vis); display:inline-block; transform:translateY(-2px);
+    box-shadow:0 0 0 3px rgba(200,255,61,.18);
+  }
+  .brand small{
+    font-family:var(--sans); font-size:10px; letter-spacing:.22em; color:var(--mute);
+    text-transform:uppercase; margin-left:4px;
+  }
+  .nav-links{display:flex; align-items:center; gap:36px}
+  .nav-links a{
+    font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#cfd6e7;
+    transition:color .3s ease;
+  }
+  .nav-links a:hover{color:var(--vis)}
+  .nav-cta{
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    background:var(--vis); color:var(--navy);
+    padding:12px 18px; border:1px solid var(--vis);
+    transition:background .3s ease, color .3s ease;
+  }
+  .nav-cta:hover{background:transparent; color:var(--vis)}
+
+  /* Vertical ticker */
+  .ticker{
+    position:fixed; right:22px; top:50%; transform:translateY(-50%) rotate(180deg);
+    writing-mode:vertical-rl;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--mute); z-index:20; pointer-events:none;
+  }
+  .ticker .hi{color:var(--vis)}
+
+  /* Reveal */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1; transform:none}
+  .reveal.d1{transition-delay:.08s}
+  .reveal.d2{transition-delay:.16s}
+  .reveal.d3{transition-delay:.24s}
+  .reveal.d4{transition-delay:.32s}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    padding-top:160px; padding-bottom:80px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    position:relative; overflow:hidden;
+  }
+  .hero::before{
+    /* large background scribble — fine line motif */
+    content:""; position:absolute; right:-10%; top:8%;
+    width:720px; height:720px;
+    background:radial-gradient(closest-side, rgba(200,255,61,.07), transparent 70%);
+    filter:blur(20px);
+    pointer-events:none;
+  }
+  .hero-meta{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:40px; padding-bottom:48px;
+  }
+  .hero-meta .col{max-width:260px}
+  .hero h1 .word{display:inline-block; overflow:hidden; vertical-align:baseline}
+  .hero h1 .word > span{display:inline-block; transform:translateY(110%); transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .hero.in h1 .word > span{transform:translateY(0)}
+  .hero h1 .word:nth-child(2) > span{transition-delay:.08s}
+  .hero h1 .word:nth-child(3) > span{transition-delay:.16s}
+  .hero h1 .word:nth-child(4) > span{transition-delay:.24s}
+
+  .hero h1 em{
+    font-style:italic; color:var(--vis); position:relative; padding:0 .04em;
+  }
+  .hero h1 em::after{
+    content:""; position:absolute; left:0; right:0; bottom:.06em;
+    height:2px; background:var(--vis); transform-origin:right center;
+    transform:scaleX(0); transition:transform 1.4s cubic-bezier(.2,.7,.2,1) .9s;
+  }
+  .hero.in h1 em::after{transform:scaleX(1); transform-origin:left center}
+
+  .hero-foot{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:40px; padding-top:48px; border-top:1px solid var(--line);
+    opacity:0; transform:translateY(20px);
+    transition:opacity 1s ease 1.1s, transform 1s ease 1.1s;
+  }
+  .hero.in .hero-foot{opacity:1; transform:none}
+  .hero-sub{max-width:520px; font-size:clamp(16px, 1.2vw, 19px); color:#dde3ef; line-height:1.55}
+
+  /* CTA buttons */
+  .cta{
+    display:inline-flex; align-items:center; gap:14px;
+    font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+    background:var(--vis); color:var(--navy);
+    padding:18px 26px; border:1px solid var(--vis);
+    transition:background .35s ease, color .35s ease, letter-spacing .35s ease;
+    cursor:pointer; font-weight:500;
+  }
+  .cta .arrow{
+    display:inline-block; width:22px; height:1.5px; background:currentColor; position:relative;
+    transition:width .35s ease;
+  }
+  .cta .arrow::after{
+    content:""; position:absolute; right:0; top:-3px; width:7px; height:7px;
+    border-top:1.5px solid currentColor; border-right:1.5px solid currentColor; transform:rotate(45deg);
+  }
+  .cta:hover{background:transparent; color:var(--vis); letter-spacing:.24em}
+  .cta:hover .arrow{width:32px}
+
+  .cta-ghost{
+    display:inline-flex; align-items:center; gap:14px;
+    font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#fff;
+    padding:18px 26px; border:1px solid var(--line-strong); background:transparent;
+    transition:border-color .3s ease, color .3s ease;
+  }
+  .cta-ghost:hover{border-color:var(--vis); color:var(--vis)}
+
+  .cta-inline{
+    display:inline-flex; align-items:center; gap:14px;
+    font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--vis);
+    padding-bottom:6px; border-bottom:1px solid var(--vis);
+    transition:padding .35s ease;
+  }
+  .cta-inline:hover{padding-bottom:10px}
+
+  /* SHIFT */
+  .shift-grid{display:grid; grid-template-columns: 1fr 1.4fr; gap:clamp(40px, 8vw, 120px); align-items:start}
+  .shift-grid .col-meta{position:sticky; top:140px}
+  .shift-h{margin-bottom:56px}
+  .shift-body p + p{margin-top:24px}
+
+  /* Pull quote */
+  .pullquote{
+    margin: clamp(80px, 12vw, 160px) 0 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding: clamp(60px, 8vw, 110px) 0;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .pullquote .quote{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(40px, 7vw, 104px); line-height:1.02; letter-spacing:-.02em; color:#fff;
+    position:relative; display:inline-block;
+  }
+  .pullquote .quote .hi{color:var(--vis)}
+  .pullquote .punct{
+    position:absolute; font-family:var(--serif); font-style:italic; font-weight:300;
+    color:rgba(255,255,255,.08);
+    font-size:clamp(120px, 18vw, 320px); line-height:1; user-select:none; pointer-events:none;
+    top:-.18em;
+  }
+  .pullquote .punct.l{left:-.5em}
+  .pullquote .punct.r{right:-.5em; transform:scaleX(-1)}
+  .pullquote .credit{margin-top:36px; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--mute)}
+
+  /* MANIFESTO */
+  .manifesto-poster{
+    margin-top:64px; border:1px solid var(--line);
+    padding: clamp(48px, 7vw, 96px);
+    background:var(--navy-2);
+    position:relative; overflow:hidden;
+  }
+  .manifesto-poster::before{content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:var(--line)}
+  .manifesto-poster::after{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--line)}
+  .manifesto-poster h2{position:relative; z-index:2; max-width:18ch; padding:0 .1em}
+  .manifesto-poster h2 .hi{color:var(--vis); font-style:italic}
+  .manifesto-meta{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:64px; gap:40px; flex-wrap:wrap; position:relative; z-index:2;
+  }
+  .manifesto-meta .body{max-width:46ch; padding:8px 0}
+  .manifesto-stamp{
+    font-family:var(--serif); font-style:italic; font-weight:300; color:#dde3ef;
+    font-size:18px; line-height:1.3; text-align:right;
+    border-left:1px solid var(--vis); padding-left:18px;
+  }
+
+  /* WORK CARDS */
+  .disc-head{display:flex; justify-content:space-between; align-items:flex-end; gap:48px; flex-wrap:wrap; margin-bottom:80px}
+  .cards{display:grid; grid-template-columns:repeat(2, 1fr); border-top:1px solid var(--line); border-left:1px solid var(--line)}
+  .card{
+    padding: clamp(36px, 4.5vw, 64px);
+    border-right:1px solid var(--line); border-bottom:1px solid var(--line);
+    position:relative; min-height:340px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transition:background .5s ease;
+    overflow:hidden;
+  }
+  .card::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:0%;
+    background:var(--vis); transition:width .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .card:hover{background:var(--navy-2)}
+  .card:hover::after{width:100%}
+  .card-num{
+    font-family:var(--serif); font-weight:300; font-style:italic;
+    font-size:14px; color:var(--vis); letter-spacing:.04em;
+    display:flex; align-items:center; gap:14px;
+  }
+  .card-num::after{content:""; flex:0 0 auto; width:24px; height:1px; background:var(--vis); opacity:.6}
+  .card-title{
+    font-family:var(--serif); font-size:clamp(28px, 2.6vw, 40px); font-weight:300;
+    margin:18px 0 22px; line-height:1.05; letter-spacing:-.015em; color:#fff;
+  }
+  .card-body{font-size:15.5px; line-height:1.6; color:#cfd6e7; max-width:42ch}
+
+  /* ============ CLIENT WORK STRIP ============ */
+  .work-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:48px; flex-wrap:wrap; margin-bottom:64px;
+  }
+  .work-strip{
+    display:grid; grid-template-columns:repeat(12, 1fr);
+    gap:24px; row-gap:32px;
+  }
+  .case{
+    grid-column:span 6; position:relative; overflow:hidden;
+    background:var(--navy-2); border:1px solid var(--line);
+    aspect-ratio: 4 / 3;
+    display:block;
+    transition:transform .6s cubic-bezier(.2,.7,.2,1), border-color .4s ease;
+  }
+  .case.tall{grid-column:span 4; aspect-ratio: 3 / 4}
+  .case.wide{grid-column:span 8; aspect-ratio: 16 / 9}
+  .case .ph{
+    position:absolute; inset:0;
+    display:flex; align-items:flex-end;
+    background:linear-gradient(135deg, var(--c1, #142654), var(--c2, #0a1730));
+  }
+  .case .ph svg{width:100%; height:100%; position:absolute; inset:0; opacity:.85}
+  .case .meta{
+    position:absolute; left:24px; right:24px; bottom:20px; z-index:3;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:16px;
+    color:#fff;
+  }
+  .case .name{font-family:var(--serif); font-weight:300; font-size:clamp(20px, 1.6vw, 26px); letter-spacing:-.01em}
+  .case .tag{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--mute)}
+  .case .num{position:absolute; top:20px; left:24px; color:var(--vis); z-index:3}
+  .case::before{
+    content:""; position:absolute; inset:0; z-index:2;
+    background:linear-gradient(to top, rgba(10,23,48,.6), transparent 50%);
+    pointer-events:none;
+  }
+  .case:hover{border-color:var(--vis)}
+  .case:hover .name{color:var(--vis)}
+
+  /* ============ TEAM ============ */
+  .team-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:48px; flex-wrap:wrap; margin-bottom:64px;
+  }
+  .team-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:32px;
+  }
+  .person{display:flex; flex-direction:column; gap:18px}
+  .person .portrait{
+    aspect-ratio:4/5; background:var(--navy-2); border:1px solid var(--line);
+    position:relative; overflow:hidden;
+    transition:border-color .4s ease;
+  }
+  .person:hover .portrait{border-color:var(--vis)}
+  .person .portrait svg{position:absolute; inset:0; width:100%; height:100%}
+  .person .portrait .label{
+    position:absolute; left:14px; bottom:12px; font-size:10px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--vis); z-index:2;
+  }
+  .person .name{font-family:var(--serif); font-weight:300; font-size:22px; line-height:1.1; color:#fff; letter-spacing:-.01em}
+  .person .role{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--mute); margin-top:4px}
+  .person .bio{font-size:14px; line-height:1.55; color:#cfd6e7; margin-top:8px; max-width:34ch}
+
+  /* APPROACH */
+  .approach-grid{display:grid; grid-template-columns:1fr 1fr; gap: clamp(40px, 8vw, 120px); align-items:start}
+  .approach-h{margin-bottom:36px}
+  .approach-state{
+    margin-top:80px; padding-top:36px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:baseline; gap:24px; flex-wrap:wrap;
+  }
+  .approach-state .stmt{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(22px, 2vw, 30px); color:#fff;
+  }
+  .approach-state .stmt .hi{color:var(--vis)}
+  .approach-state .label{font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--mute)}
+
+  .approach-marks{border-top:1px solid var(--line)}
+  .mark{
+    padding:22px 0; border-bottom:1px solid var(--line);
+    display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:24px;
+    transition:padding-left .4s ease;
+  }
+  .mark:hover{padding-left:12px}
+  .mark .m-num{font-family:var(--serif); font-style:italic; color:var(--vis); font-size:14px}
+  .mark .m-name{font-family:var(--serif); font-weight:300; font-size:clamp(22px, 1.6vw, 26px); color:#fff}
+  .mark .m-tag{font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--mute)}
+
+  /* CONTACT */
+  .contact h2{font-size:clamp(44px, 7.5vw, 124px); max-width:18ch}
+  .contact h2 .hi{color:var(--vis); font-style:italic}
+  .contact-body{margin-top:48px; max-width:60ch; font-size:clamp(17px, 1.3vw, 21px); color:#dde3ef; line-height:1.55}
+  .contact-cta{margin-top:64px; display:flex; flex-wrap:wrap; align-items:center; gap:48px}
+  .mail-link{
+    font-family:var(--serif); font-weight:300;
+    font-size:clamp(28px, 4vw, 56px); line-height:1; color:var(--vis);
+    border-bottom:1px solid var(--vis); padding-bottom:8px;
+    transition:padding .4s ease;
+    display:inline-block;
+  }
+  .mail-link:hover{padding-bottom:14px}
+
+  /* FOOTER */
+  footer{
+    border-top:1px solid var(--line);
+    padding: 56px var(--pad) 40px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:32px; flex-wrap:wrap;
+    font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--mute);
+  }
+  footer .f-mark{
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:15px; letter-spacing:.01em; text-transform:none; color:#fff;
+  }
+  footer .f-mark .hi{color:var(--vis)}
+
+  /* Responsive */
+  @media (max-width: 1024px){
+    .team-grid{grid-template-columns:repeat(2, 1fr)}
+    .case, .case.tall, .case.wide{grid-column:span 12; aspect-ratio: 4/3}
+  }
+  @media (max-width: 880px){
+    .ticker{display:none}
+    .nav-links{display:none}
+    .shift-grid{grid-template-columns:1fr}
+    .shift-grid .col-meta{position:static}
+    .approach-grid{grid-template-columns:1fr}
+    .cards{grid-template-columns:1fr}
+    .team-grid{grid-template-columns:1fr 1fr; gap:20px}
+    .hero-meta{flex-direction:column; gap:24px}
+    .hero-foot{flex-direction:column; align-items:flex-start; gap:32px}
+    .pullquote .punct.l{left:-.2em}
+    .pullquote .punct.r{right:-.2em}
+    .manifesto-poster::after{display:none}
+    .manifesto-stamp{text-align:left; border-left:0; padding-left:0; border-top:1px solid var(--vis); padding-top:14px}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important}
+    .hero h1 .word > span{transform:none}
+    .reveal{opacity:1; transform:none}
+    .hero h1 em::after{transform:scaleX(1)}
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true">Cut <span class="hi">through</span> the noise — Astutely © MMXXVI</div>
+
+<nav class="nav" id="nav">
+  <a href="#top" class="brand"><span class="dot"></span> Astutely <small>est. 2026</small></a>
+  <div class="nav-links">
+    <a href="#shift">The shift</a>
+    <a href="#work">Work</a>
+    <a href="#team">Team</a>
+    <a href="#contact" class="nav-cta">Start a conversation</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <div class="hero-meta">
+        <div class="col"><span class="eyebrow">Index — 01 / 07</span></div>
+        <div class="col">
+          <p class="small">A creative marketing agency. Considered work for considered brands. Based in practice, not in noise.</p>
+        </div>
+      </div>
+
+      <h1 aria-label="Sharp thinking, beautifully applied.">
+        <span class="word"><span><em>Sharp</em></span></span>
+        <span class="word"><span>thinking,</span></span><br/>
+        <span class="word"><span>beautifully</span></span>
+        <span class="word"><span>applied.</span></span>
+      </h1>
+
+      <div class="hero-foot">
+        <div>
+          <p class="hero-sub">Astutely is a creative marketing agency for brands that need clearer direction, stronger ideas and work that feels as considered as it is effective.</p>
+          <p class="small" style="margin-top:22px">Formerly AY Studio. Sharper name. Sharper focus.</p>
+        </div>
+        <div style="display:flex; gap:14px; flex-wrap:wrap">
+          <a class="cta" href="#contact">Start a conversation <span class="arrow"></span></a>
+          <a class="cta-ghost" href="#work">See the work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 2. THE SHIFT -->
+  <section id="shift">
+    <div class="wrap">
+      <div class="shift-grid">
+        <div class="col-meta reveal">
+          <span class="eyebrow">The shift</span>
+          <p class="num" style="margin-top:32px">02 — Renaming</p>
+        </div>
+        <div>
+          <h2 class="shift-h reveal">Not a rebrand for the sake of it.</h2>
+          <div class="shift-body">
+            <p class="lead reveal d1">AY Studio has become Astutely because the work has become sharper.</p>
+            <p class="body reveal d2" style="margin-top:28px">The name reflects how we think: carefully, clearly and with intent. Less noise. Better judgement. More useful creative work.</p>
+            <p class="body reveal d3" style="margin-top:24px">Astutely is built for business owners, founders and teams who want marketing to feel less complicated and more effective.</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="pullquote reveal">
+        <span class="punct l" aria-hidden="true">“</span>
+        <span class="quote">Cut <span class="hi">through</span><br/>the&nbsp;noise.</span>
+        <span class="punct r" aria-hidden="true">“</span>
+        <figcaption class="credit">— A&nbsp;working&nbsp;principle</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 3. MANIFESTO -->
+  <section id="manifesto">
+    <div class="wrap">
+      <div class="reveal" style="display:flex; justify-content:space-between; align-items:flex-end; gap:32px; flex-wrap:wrap">
+        <span class="eyebrow">The belief</span>
+        <span class="num">03 — Manifesto</span>
+      </div>
+
+      <div class="manifesto-poster reveal d1">
+        <h2>Most brands do not need more marketing. They need <span class="hi">better decisions.</span></h2>
+        <div class="manifesto-meta">
+          <p class="body">More posts, more campaigns and more activity will not fix unclear thinking. We help brands pause, sharpen the message and move with purpose. Then we turn that clarity into brand, marketing, PR and digital work that people actually notice.</p>
+          <div class="manifesto-stamp">Sharper thinking,<br/>quieter rooms.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 4. DISCIPLINES -->
+  <section id="disciplines">
+    <div class="wrap">
+      <div class="disc-head">
+        <div class="reveal">
+          <span class="eyebrow">The work</span>
+          <h2 style="margin-top:32px">Four ways we make<br/>brands sharper.</h2>
+        </div>
+        <p class="num reveal d1">04 — Disciplines</p>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal">
+          <div>
+            <div class="card-num">01 — Brand</div>
+            <h3 class="card-title">Positioning &amp; identity, with a point of view.</h3>
+            <p class="card-body">Positioning, identity, messaging and creative direction that gives your business clarity, confidence and a stronger point of view.</p>
+          </div>
+        </article>
+        <article class="card reveal d1">
+          <div>
+            <div class="card-num">02 — Marketing</div>
+            <h3 class="card-title">Campaigns built for relevance, not volume.</h3>
+            <p class="card-body">Campaigns, content, email and digital marketing built around consistency, relevance and action.</p>
+          </div>
+        </article>
+        <article class="card reveal d2">
+          <div>
+            <div class="card-num">03 — PR &amp; Communications</div>
+            <h3 class="card-title">Stories that earn attention, not chase it.</h3>
+            <p class="card-body">Stories, messaging and media thinking that help your business earn attention and build trust.</p>
+          </div>
+        </article>
+        <article class="card reveal d3">
+          <div>
+            <div class="card-num">04 — Web &amp; Digital</div>
+            <h3 class="card-title">Digital experiences that look as sharp as they perform.</h3>
+            <p class="card-body">Websites, landing pages and digital experiences designed to look sharp, work properly and support growth.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 5. CLIENT WORK STRIP -->
+  <section id="work">
+    <div class="wrap">
+      <div class="work-head">
+        <div class="reveal">
+          <span class="eyebrow">Selected work</span>
+          <h2 style="margin-top:32px">A short, sharp&nbsp;portfolio.</h2>
+        </div>
+        <div class="reveal d1" style="max-width:32ch">
+          <p class="body">A small selection of recent engagements. Replace these placeholders with case imagery — each tile is sized for hero photography or branded compositions.</p>
+          <p class="num" style="margin-top:18px">05 — Case studies</p>
+        </div>
+      </div>
+
+      <div class="work-strip">
+        <a class="case wide reveal" href="#" aria-label="Halden — repositioning">
+          <div class="ph" style="--c1:#16306a; --c2:#0a1730">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#1f3d80"/><stop offset="1" stop-color="#0a1730"/></linearGradient></defs>
+              <rect width="800" height="450" fill="url(#g1)"/>
+              <g stroke="rgba(200,255,61,.55)" stroke-width="1" fill="none">
+                <circle cx="600" cy="225" r="160"/>
+                <circle cx="600" cy="225" r="110"/>
+                <circle cx="600" cy="225" r="60"/>
+              </g>
+              <text x="60" y="230" font-family="Fraunces, serif" font-style="italic" font-size="120" font-weight="300" fill="#ffffff">Halden</text>
+            </svg>
+          </div>
+          <span class="num">01</span>
+          <div class="meta"><span class="name">Halden Whisky</span><span class="tag">Repositioning · Brand</span></div>
+        </a>
+
+        <a class="case tall reveal d1" href="#" aria-label="Marlowe — identity">
+          <div class="ph" style="--c1:#1a2f5e; --c2:#0a1730">
+            <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="600" height="800" fill="#0e1d3c"/>
+              <g stroke="rgba(255,255,255,.18)" stroke-width="1">
+                <line x1="0" y1="200" x2="600" y2="200"/>
+                <line x1="0" y1="400" x2="600" y2="400"/>
+                <line x1="0" y1="600" x2="600" y2="600"/>
+              </g>
+              <text x="50" y="430" font-family="Fraunces, serif" font-size="180" font-weight="300" fill="#c8ff3d">M.</text>
+              <text x="50" y="500" font-family="Inter, sans-serif" font-size="22" letter-spacing="6" fill="rgba(255,255,255,.7)">MARLOWE &amp; CO.</text>
+            </svg>
+          </div>
+          <span class="num">02</span>
+          <div class="meta"><span class="name">Marlowe &amp; Co.</span><span class="tag">Identity · Print</span></div>
+        </a>
+
+        <a class="case reveal d2" href="#" aria-label="Northbound — campaign">
+          <div class="ph" style="--c1:#0e1d3c; --c2:#142654">
+            <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="600" fill="#0a1730"/>
+              <g fill="none" stroke="rgba(200,255,61,.6)" stroke-width="1.5">
+                <path d="M0,500 C200,420 400,580 800,300"/>
+                <path d="M0,460 C200,380 400,540 800,260" stroke="rgba(255,255,255,.25)"/>
+              </g>
+              <text x="60" y="180" font-family="Fraunces, serif" font-style="italic" font-size="80" fill="#ffffff" font-weight="300">Northbound.</text>
+            </svg>
+          </div>
+          <span class="num">03</span>
+          <div class="meta"><span class="name">Northbound Capital</span><span class="tag">Campaign · Digital</span></div>
+        </a>
+
+        <a class="case reveal d1" href="#" aria-label="Field & Co — packaging">
+          <div class="ph" style="--c1:#142654; --c2:#0a1730">
+            <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="600" fill="#0e1d3c"/>
+              <rect x="280" y="100" width="240" height="400" fill="#0a1730" stroke="rgba(255,255,255,.4)"/>
+              <line x1="280" y1="240" x2="520" y2="240" stroke="rgba(200,255,61,.7)"/>
+              <text x="400" y="290" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-size="34" fill="#ffffff">Field &amp; Co.</text>
+              <text x="400" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" letter-spacing="6" fill="rgba(200,255,61,.85)">EST · MMXXIV</text>
+            </svg>
+          </div>
+          <span class="num">04</span>
+          <div class="meta"><span class="name">Field &amp; Co.</span><span class="tag">Packaging · Brand</span></div>
+        </a>
+
+        <a class="case wide reveal d2" href="#" aria-label="Quayside — web">
+          <div class="ph" style="--c1:#0a1730; --c2:#16306a">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="450" fill="#0a1730"/>
+              <g stroke="rgba(255,255,255,.18)" stroke-width="1">
+                <line x1="0" y1="120" x2="800" y2="120"/>
+                <line x1="0" y1="330" x2="800" y2="330"/>
+              </g>
+              <text x="60" y="240" font-family="Fraunces, serif" font-size="120" font-weight="300" fill="#ffffff">Quayside<tspan fill="#c8ff3d">.</tspan></text>
+              <text x="60" y="290" font-family="Inter, sans-serif" font-size="13" letter-spacing="6" fill="rgba(255,255,255,.5)">DIGITAL · 2026</text>
+            </svg>
+          </div>
+          <span class="num">05</span>
+          <div class="meta"><span class="name">Quayside Hotels</span><span class="tag">Web · Digital</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 6. TEAM -->
+  <section id="team">
+    <div class="wrap">
+      <div class="team-head">
+        <div class="reveal">
+          <span class="eyebrow">The people</span>
+          <h2 style="margin-top:32px">A small team. Sharp in&nbsp;practice.</h2>
+        </div>
+        <div class="reveal d1" style="max-width:32ch">
+          <p class="body">A senior team that does the work, not just sells it. Replace the placeholder portraits with real photography when ready.</p>
+          <p class="num" style="margin-top:18px">06 — The team</p>
+        </div>
+      </div>
+
+      <div class="team-grid">
+        <div class="person reveal">
+          <div class="portrait">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs><linearGradient id="p1" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1f3d80"/><stop offset="1" stop-color="#0a1730"/></linearGradient></defs>
+              <rect width="400" height="500" fill="url(#p1)"/>
+              <circle cx="200" cy="200" r="80" fill="rgba(255,255,255,.08)"/>
+              <path d="M70,500 C70,360 330,360 330,500 Z" fill="rgba(255,255,255,.08)"/>
+            </svg>
+            <span class="label">Portrait — 01</span>
+          </div>
+          <div>
+            <div class="name">Alex Yates</div>
+            <div class="role">Founder · Strategy</div>
+            <p class="bio">Twelve years building brands that prefer judgement over volume.</p>
+          </div>
+        </div>
+
+        <div class="person reveal d1">
+          <div class="portrait">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="500" fill="#0e1d3c"/>
+              <circle cx="200" cy="190" r="78" fill="rgba(200,255,61,.12)"/>
+              <path d="M60,500 C60,350 340,350 340,500 Z" fill="rgba(255,255,255,.08)"/>
+            </svg>
+            <span class="label">Portrait — 02</span>
+          </div>
+          <div>
+            <div class="name">Iris Holloway</div>
+            <div class="role">Creative Director</div>
+            <p class="bio">Identity, art direction and the editorial eye behind the studio.</p>
+          </div>
+        </div>
+
+        <div class="person reveal d2">
+          <div class="portrait">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="500" fill="#142654"/>
+              <circle cx="200" cy="195" r="82" fill="rgba(255,255,255,.1)"/>
+              <path d="M70,500 C70,360 330,360 330,500 Z" fill="rgba(200,255,61,.08)"/>
+            </svg>
+            <span class="label">Portrait — 03</span>
+          </div>
+          <div>
+            <div class="name">Daniel Okafor</div>
+            <div class="role">Head of PR</div>
+            <p class="bio">Stories placed where they earn trust, not just impressions.</p>
+          </div>
+        </div>
+
+        <div class="person reveal d3">
+          <div class="portrait">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="400" height="500" fill="#0a1730"/>
+              <circle cx="200" cy="190" r="80" fill="rgba(255,255,255,.08)"/>
+              <path d="M60,500 C60,350 340,350 340,500 Z" fill="rgba(200,255,61,.1)"/>
+            </svg>
+            <span class="label">Portrait — 04</span>
+          </div>
+          <div>
+            <div class="name">Sara Lindqvist</div>
+            <div class="role">Digital Lead</div>
+            <p class="bio">Sites that load fast, read clearly and convert without shouting.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- 7. APPROACH -->
+  <section id="approach">
+    <div class="wrap">
+      <div class="approach-grid">
+        <div>
+          <span class="eyebrow reveal">The method</span>
+          <h2 class="approach-h reveal d1" style="margin-top:32px">We simplify before we&nbsp;create.</h2>
+          <p class="lead reveal d2">The best work usually starts by removing what does not matter.</p>
+          <p class="body reveal d3" style="margin-top:24px">We get to the point, find the strongest angle and build from there. Strategy, design, content and marketing work together, not as separate pieces.</p>
+        </div>
+        <div class="reveal d2">
+          <p class="num" style="margin-bottom:24px">07 — Working principles</p>
+          <div class="approach-marks">
+            <div class="mark"><span class="m-num">i.</span><span class="m-name">Sharpen the message</span><span class="m-tag">First</span></div>
+            <div class="mark"><span class="m-num">ii.</span><span class="m-name">Find the strongest angle</span><span class="m-tag">Then</span></div>
+            <div class="mark"><span class="m-num">iii.</span><span class="m-name">Build with intent</span><span class="m-tag">Always</span></div>
+            <div class="mark"><span class="m-num">iv.</span><span class="m-name">Remove what does not matter</span><span class="m-tag">Often</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="approach-state reveal">
+        <span class="stmt"><span class="hi">Sharper thinking</span> in. Better work out.</span>
+        <span class="label">— The method, in one line</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule"/>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="reveal" style="display:flex; justify-content:space-between; align-items:baseline; gap:32px; flex-wrap:wrap; margin-bottom:48px">
+        <span class="eyebrow">The conversation</span>
+        <span class="num">08 — Contact</span>
+      </div>
+      <h2 class="reveal d1">Ready to <span class="hi">sharpen</span> what comes&nbsp;next?</h2>
+      <p class="contact-body reveal d2">If you are launching, repositioning or trying to make your marketing feel clearer and more effective, we should talk.</p>
+      <div class="contact-cta reveal d3">
+        <a class="mail-link" href="mailto:hello@ay.studio">hello@ay.studio</a>
+        <a class="cta-inline" href="https://ay.studio" rel="noopener">ay.studio</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>
+    <div class="f-mark">Astutely<span class="hi">.</span></div>
+    <div style="margin-top:8px">© 2026 — All rights reserved</div>
+  </div>
+  <div style="text-align:right">
+    <div class="f-mark">Sharp thinking, beautifully applied.</div>
+    <div style="margin-top:8px">Cut <span style="color:var(--vis)">through</span> the noise.</div>
+  </div>
+</footer>
+
+<script>
+  requestAnimationFrame(()=>{ document.getElementById('hero').classList.add('in'); });
+
+  const nav = document.getElementById('nav');
+  const onScroll = () => { window.scrollY > 24 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled'); };
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
