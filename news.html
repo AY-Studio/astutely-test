@@ -153,20 +153,73 @@
     border-bottom:1px solid var(--line);
   }
   .article-card{
-    padding:clamp(28px, 4vw, 48px) clamp(20px, 3vw, 36px);
+    padding:0;
     border-right:1px solid var(--line);
     border-bottom:1px solid var(--line);
-    display:flex; flex-direction:column; gap:16px;
+    display:flex; flex-direction:column;
     position:relative;
     background:transparent;
     transition:background .25s ease;
+    cursor:pointer;
   }
   .article-card:nth-child(2n){ border-right:0 }
   .article-card:hover{ background:rgba(13,12,41,.06) }
+  /* Entire card is the click target via the title link's overlay */
+  .article-card h2 a::after{
+    content:"";
+    position:absolute; inset:0; z-index:1;
+  }
+  /* Keep read-more independently focusable + clickable above the overlay */
+  .article-card .read-more{ position:relative; z-index:2 }
+  /* Card-wide focus ring when the title link is focused */
+  .article-card:has(h2 a:focus-visible){
+    outline:2px solid var(--ink);
+    outline-offset:-1px;
+  }
+  .article-card h2 a:focus-visible{ outline:none }
+  .card-image{
+    display:block;
+    aspect-ratio:16/9; overflow:hidden;
+    /* Inset the plate inside the card on all sides of the top edge —
+       matches .card-content side padding, plus a generous top inset.
+       The bottom inset is provided by .card-content's top padding. */
+    margin:clamp(20px, 2.5vw, 28px) clamp(20px, 3vw, 36px) 0;
+    border:1px solid var(--ink);
+    background:rgba(13,12,41,.08);
+    position:relative;
+  }
+  .card-image img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .8s cubic-bezier(.2,.7,.2,1), filter .35s ease;
+    filter:saturate(.9);
+  }
+  .article-card:hover .card-image img{ transform:scale(1.04); filter:saturate(1) }
+  /* Tiny mono index in the corner of every plate — editorial */
+  .card-image::after{
+    content:attr(data-no);
+    position:absolute; top:8px; left:10px;
+    font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--vis); background:var(--ink);
+    padding:3px 6px; line-height:1;
+    pointer-events:none;
+  }
+  .card-content{
+    padding:clamp(20px, 3vw, 32px) clamp(20px, 3vw, 36px) clamp(28px, 4vw, 40px);
+    display:flex; flex-direction:column; gap:14px;
+    flex:1;
+  }
   .article-card .meta{
-    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
-    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    display:flex; gap:14px; align-items:center; flex-wrap:nowrap;
+    white-space:nowrap;
+    min-height:26px;             /* reserves a single-line height so titles align */
+    overflow:hidden;             /* graceful clip if extreme content overflows */
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--ink);
+  }
+  .article-card .meta > *{ flex-shrink:0 }
+  .article-card .meta time{
+    flex:0 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis;
   }
   .article-card .meta .category{
     border:1px solid var(--ink); padding:3px 8px; line-height:1; min-height:22px;
@@ -206,6 +259,7 @@
     grid-column:1 / -1;
     border-right:0;
   }
+  .article-card.featured .card-image{ aspect-ratio:21/9 }
   .article-card.featured h2{
     font-size:clamp(32px, 4vw, 56px); max-width:18ch;
   }
@@ -310,7 +364,7 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-nav">
-  <a class="logo" href="/" aria-label="Astutely — home">
+  <a class="logo" href="holding-2.html" aria-label="Astutely — home">
     <svg viewBox="0 0 1111.33 262.32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <g>
         <path d="M12.83,147.49l30.85-2.51L121.29,21.5l55.31,13.87-.76,190.04-47.97-14.3.42-45.87-64.73,5.35-36.35,58.39L0,214.43l25.87-40.91-6.82.67-6.21-26.71ZM129.42,64.63l-48.06,77.16,47.29-3.67.77-73.49Z"/>
@@ -327,7 +381,7 @@
   </a>
   <nav aria-label="Primary">
     <ul>
-      <li><a href="/">Home</a></li>
+      <li><a href="holding-2.html">Home</a></li>
       <li><a href="news.html" aria-current="page">News</a></li>
       <li><a href="mailto:hello@astutelyagency.com">Contact</a></li>
     </ul>
@@ -362,80 +416,115 @@
     <section class="article-list" aria-label="Recent articles">
 
       <article class="article-card featured">
-        <p class="meta">
-          <time datetime="2026-04-22">22 April 2026</time>
-          <span class="category">Studio</span>
-          <span>8 min read</span>
-        </p>
-        <h2><a href="news-single.html">AY Studio is now Astutely. Same hand, sharper pencil.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. After nine years building brands, we have a new name that finally matches how we already think — considered, clear-eyed, and useful. A quiet announcement and a longer note on what does, and does not, change.</p>
-        <a class="read-more" href="news-single.html" aria-label="Read article: AY Studio is now Astutely">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 01" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-rebrand/1600/686" alt="" loading="lazy" width="1600" height="686"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-04-22">22 April 2026</time>
+            <span class="category">Studio</span>
+            <span>8 min read</span>
+          </p>
+          <h2><a href="news-single.html">AY Studio is now Astutely. Same hand, sharper pencil.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. After nine years building brands, we have a new name that finally matches how we already think — considered, clear-eyed, and useful. A quiet announcement and a longer note on what does, and does not, change.</p>
+          <a class="read-more" href="news-single.html" aria-label="Read article: AY Studio is now Astutely">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-04-08">8 April 2026</time>
-          <span class="category">Brand</span>
-          <span>6 min read</span>
-        </p>
-        <h2><a href="news-single.html">Why most brand work fails before it begins.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 02" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-brand/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-04-08">8 April 2026</time>
+            <span class="category">Brand</span>
+            <span>6 min read</span>
+          </p>
+          <h2><a href="news-single.html">Why most brand work fails before it begins.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-03-26">26 March 2026</time>
-          <span class="category">Marketing</span>
-          <span>4 min read</span>
-        </p>
-        <h2><a href="news-single.html">Marketing built around a clear story, not a budget.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 03" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-marketing/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-03-26">26 March 2026</time>
+            <span class="category">Marketing</span>
+            <span>4 min read</span>
+          </p>
+          <h2><a href="news-single.html">Marketing built around a clear story, not a budget.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-03-12">12 March 2026</time>
-          <span class="category">Web</span>
-          <span>7 min read</span>
-        </p>
-        <h2><a href="news-single.html">A website is a system, not a brochure.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 04" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-web/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-03-12">12 March 2026</time>
+            <span class="category">Web</span>
+            <span>7 min read</span>
+          </p>
+          <h2><a href="news-single.html">A website is a system, not a brochure.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-02-28">28 February 2026</time>
-          <span class="category">Systems</span>
-          <span>5 min read</span>
-        </p>
-        <h2><a href="news-single.html">CRM, automation and the unglamorous work of growth.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 05" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-systems/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-02-28">28 February 2026</time>
+            <span class="category">Systems</span>
+            <span>5 min read</span>
+          </p>
+          <h2><a href="news-single.html">CRM, automation and the unglamorous work of growth.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-02-14">14 February 2026</time>
-          <span class="category">Brand</span>
-          <span>3 min read</span>
-        </p>
-        <h2><a href="news-single.html">The brief is the work.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 06" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-brief/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-02-14">14 February 2026</time>
+            <span class="category">Brand</span>
+            <span>3 min read</span>
+          </p>
+          <h2><a href="news-single.html">The brief is the work.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
       <article class="article-card">
-        <p class="meta">
-          <time datetime="2026-01-30">30 January 2026</time>
-          <span class="category">Marketing</span>
-          <span>9 min read</span>
-        </p>
-        <h2><a href="news-single.html">Less marketing, better decisions.</a></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
-        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        <a class="card-image" data-no="No. 07" href="news-single.html" aria-hidden="true" tabindex="-1">
+          <img src="https://picsum.photos/seed/astutely-less/800/450" alt="" loading="lazy" width="800" height="450"/>
+        </a>
+        <div class="card-content">
+          <p class="meta">
+            <time datetime="2026-01-30">30 January 2026</time>
+            <span class="category">Marketing</span>
+            <span>9 min read</span>
+          </p>
+          <h2><a href="news-single.html">Less marketing, better decisions.</a></h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+          <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+        </div>
       </article>
 
     </section>
@@ -472,7 +561,7 @@
     <div class="footer-col">
       <h3>Index</h3>
       <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="holding-2.html">Home</a></li>
         <li><a href="news.html">News</a></li>
         <li><a href="mailto:hello@astutelyagency.com">Start a project</a></li>
       </ul>
