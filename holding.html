@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Astutely — formerly AY Studio</title>
+<meta name="description" content="AY Studio is now Astutely. Sharp thinking, beautifully applied. Move to draw, click to sign." />
+<meta name="theme-color" content="#0d0c29" />
+
+<meta property="og:title" content="Astutely — formerly AY Studio" />
+<meta property="og:description" content="Sharp thinking, beautifully applied." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d0c29;
+    --ink-2:#161538;
+    --paper:#f4f2eb;
+    --vis:#3cff93;
+    --vis-d:#22dd75;
+    --line:rgba(255,255,255,.12);
+    --line-2:rgba(255,255,255,.28);
+    --mute:#8b8aa8;
+    --display:'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --pad:clamp(20px, 4vw, 56px);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%; width:100%; overflow:hidden}
+  html{-webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{
+    background:var(--ink);
+    color:#fff;
+    font-family:var(--display);
+    font-size:16px;
+    line-height:1.4;
+    overscroll-behavior:none;
+    touch-action:none;
+    cursor:none;
+  }
+  ::selection{background:var(--vis); color:var(--ink)}
+  a{color:inherit; text-decoration:none}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:none}
+
+  /* Stage */
+  .stage{
+    position:fixed; inset:0;
+    width:100vw; height:100vh; height:100dvh;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 78% 28%, rgba(60,255,147,.07), transparent 55%),
+      radial-gradient(circle at 12% 82%, rgba(110,90,255,.10), transparent 60%),
+      var(--ink);
+  }
+
+  /* Subtle film grain */
+  .grain{
+    position:absolute; inset:-50%;
+    background-image:
+      repeating-radial-gradient(circle at 0 0, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;
+    pointer-events:none;
+    animation:grainShift 7s steps(6) infinite;
+    opacity:.55;
+  }
+  @keyframes grainShift{
+    0%   {transform:translate(0,0)}
+    25%  {transform:translate(-2%,1%)}
+    50%  {transform:translate(1%,-2%)}
+    75%  {transform:translate(-1%,2%)}
+    100% {transform:translate(0,0)}
+  }
+
+  /* Ink canvas */
+  canvas#ink{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    pointer-events:none;
+  }
+
+  /* Custom cursor */
+  .cursor{
+    position:fixed; top:0; left:0;
+    width:18px; height:18px; margin:-9px 0 0 -9px;
+    pointer-events:none; z-index:80;
+    transform:translate3d(-100px,-100px,0);
+    transition:width .2s ease, height .2s ease, margin .2s ease;
+    mix-blend-mode:screen;
+  }
+  .cursor::before, .cursor::after{
+    content:""; position:absolute; left:50%; top:50%; background:var(--vis);
+    box-shadow:0 0 8px rgba(60,255,147,.7);
+  }
+  .cursor::before{ width:1px; height:14px; transform:translate(-50%,-50%) }
+  .cursor::after { width:14px; height:1px; transform:translate(-50%,-50%) }
+  .cursor.hot{ width:38px; height:38px; margin:-19px 0 0 -19px }
+  .cursor.hot::before{ height:22px } .cursor.hot::after{ width:22px }
+
+  /* HUD */
+  .hud{
+    position:absolute; inset:0;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    padding:var(--pad);
+    z-index:10;
+    pointer-events:none;
+  }
+  .hud > *{ pointer-events:auto }
+
+  .top{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px;
+  }
+  .brand{
+    display:inline-flex; align-items:baseline; gap:10px;
+    font-weight:500; font-size:18px; letter-spacing:-.01em; color:#fff;
+  }
+  .brand .pip{
+    width:8px; height:8px; background:var(--vis); display:inline-block;
+    transform:translateY(-1px);
+    box-shadow:0 0 0 4px rgba(60,255,147,.16);
+    animation:blink 2.6s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.5} }
+  .brand small{
+    font-family:var(--mono); font-weight:400; font-size:10px; letter-spacing:.24em;
+    color:var(--mute); text-transform:uppercase; margin-left:4px;
+  }
+
+  .status{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--mute);
+    display:inline-flex; align-items:center; gap:14px;
+    white-space:nowrap;
+  }
+  .status .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--vis);
+    box-shadow:0 0 8px rgba(60,255,147,.7);
+    animation:blink 1.8s ease-in-out infinite;
+  }
+  .status .arrow{ color:var(--vis) }
+  .status .from{ color:#fff; opacity:.55; text-decoration:line-through; text-decoration-color:rgba(255,255,255,.4) }
+  .status .to{ color:#fff }
+
+  /* Centerpiece */
+  .center{
+    align-self:center; justify-self:center;
+    text-align:center;
+    width:100%;
+    transform:translateZ(0);
+    will-change:transform;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--mute); margin-bottom:clamp(20px,3vw,32px);
+    display:inline-flex; align-items:center; gap:14px;
+  }
+  .eyebrow .bar{ width:36px; height:1px; background:var(--line-2) }
+
+  .wordmark{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(64px, 18vw, 280px);
+    line-height:.86;
+    letter-spacing:-.045em;
+    color:#fff;
+    display:inline-block;
+    position:relative;
+  }
+  .wordmark .dot{ color:var(--vis) }
+  .wordmark .ch{
+    display:inline-block;
+    transform:translate3d(0,0,0);
+    transition:transform .25s cubic-bezier(.2,.7,.2,1);
+    will-change:transform;
+  }
+
+  .tagline{
+    margin-top:clamp(18px,2.4vw,28px);
+    font-size:clamp(15px, 1.4vw, 19px);
+    color:#cfceea;
+    font-weight:400;
+    letter-spacing:-.005em;
+  }
+  .tagline em{ font-style:normal; color:var(--vis) }
+
+  .rebrand{
+    margin-top:clamp(20px,2.6vw,32px);
+    font-family:var(--mono); font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--mute);
+    display:inline-flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center;
+  }
+  .rebrand .rb-sep{ color:var(--vis) }
+  .rebrand .rb-tag{ color:#fff }
+
+  /* Bottom row */
+  .bottom{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:24px;
+  }
+  .meta, .credit{
+    font-family:var(--display); font-size:14px; font-weight:400; letter-spacing:0;
+    color:#cfceea;
+  }
+  .meta{ display:flex; gap:14px; align-items:center; justify-self:start }
+  .meta a{ color:#fff; transition:color .2s ease; border-bottom:1px solid var(--line-2); padding-bottom:1px }
+  .meta a:hover{ color:var(--vis); border-bottom-color:var(--vis) }
+  .meta .sep{ width:14px; height:1px; background:var(--line-2); display:inline-block }
+
+  .actions{ display:flex; gap:10px; align-items:center; justify-self:center }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:10px 16px;
+    border:1px solid var(--line-2);
+    color:#fff;
+    font-family:var(--display); font-size:13px; font-weight:500; letter-spacing:.01em;
+    transition:border-color .2s ease, color .2s ease, background .2s ease;
+    border-radius:2px;
+    background:rgba(255,255,255,.02);
+  }
+  .btn:hover{ border-color:var(--vis); color:var(--vis) }
+  .btn.primary{ border-color:var(--vis); color:var(--ink); background:var(--vis) }
+  .btn.primary:hover{ background:var(--vis-d); border-color:var(--vis-d); color:var(--ink) }
+  .btn .k{ color:inherit; opacity:.7 }
+  .btn .ok{ color:var(--vis) }
+
+  .credit{ display:flex; gap:14px; align-items:center; justify-self:end }
+
+  /* Hint */
+  .hint{
+    position:absolute; left:50%; bottom:calc(var(--pad) + 60px);
+    transform:translateX(-50%);
+    font-family:var(--mono); font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--mute);
+    display:inline-flex; align-items:center; gap:14px;
+    opacity:0; transition:opacity .6s ease;
+    pointer-events:none;
+    white-space:nowrap;
+  }
+  .hint.show{ opacity:1 }
+  .hint .bar{ width:24px; height:1px; background:var(--line-2) }
+  .hint kbd{
+    font-family:var(--mono); font-size:10px;
+    border:1px solid var(--line-2); padding:3px 7px; color:#fff;
+    border-radius:2px; line-height:1;
+  }
+
+  /* Toast */
+  .toast{
+    position:absolute; left:50%; top:calc(var(--pad) + 64px);
+    transform:translate(-50%, -10px);
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--ink);
+    background:var(--vis);
+    padding:10px 14px; border-radius:2px;
+    opacity:0;
+    transition:opacity .3s ease, transform .3s ease;
+    pointer-events:none;
+    z-index:90;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0) }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    .grain, .brand .pip, .status .dot{ animation:none }
+    .wordmark .ch{ transition:none }
+  }
+
+  /* Mobile */
+  @media (max-width: 720px){
+    body{ cursor:auto }
+    .cursor{ display:none }
+    .stage{ cursor:auto }
+    button, a{ cursor:pointer }
+    .top{ align-items:flex-start }
+    .status{ font-size:9px; letter-spacing:.22em }
+    .status .arrow{ margin:0 2px }
+    .bottom{ grid-template-columns:1fr; gap:16px; text-align:center }
+    .meta{ flex-wrap:wrap; gap:10px; justify-self:center; justify-content:center }
+    .meta .sep{ display:none }
+    .actions{ justify-self:center; justify-content:center }
+    .credit{ display:none }
+    .hint{ bottom:calc(var(--pad) + 130px); font-size:9px; letter-spacing:.22em }
+    .eyebrow{ font-size:10px; letter-spacing:.22em }
+    .tagline{ font-size:14px }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <canvas id="ink"></canvas>
+  <span class="grain" aria-hidden="true"></span>
+
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <div class="hud">
+    <header class="top">
+      <span class="brand">
+        <span class="pip" aria-hidden="true"></span>
+        Astutely
+        <small>est. 2026 &middot; Holywood NI</small>
+      </span>
+      <span class="status" aria-label="Rebrand status">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Creative Marketing Agency</span>
+      </span>
+    </header>
+
+    <main class="center">
+      <h1 class="wordmark" id="wordmark" aria-label="Astutely.">
+        <span class="ch">A</span><span class="ch">s</span><span class="ch">t</span><span class="ch">u</span><span class="ch">t</span><span class="ch">e</span><span class="ch">l</span><span class="ch">y</span><span class="ch dot">.</span>
+      </h1>
+      <p class="tagline">Sharp thinking, <em>beautifully applied.</em></p>
+      <p class="rebrand">AY Studio is now Astutely <span class="rb-sep">·</span> <span class="rb-tag">Same hand, sharper pencil.</span></p>
+    </main>
+
+    <footer class="bottom">
+      <div class="meta">
+        <span>2026</span><span class="sep"></span>
+        <a href="mailto:hello@astutely.studio">hello@astutely.studio</a>
+      </div>
+      <div class="actions">
+        <button class="btn" id="clearBtn" type="button" title="Clear the canvas">
+          Clear <span class="k">[C]</span>
+        </button>
+        <button class="btn primary" id="shareBtn" type="button" title="Copy link to share">
+          Share <span class="k">↗</span>
+        </button>
+      </div>
+      <div class="credit">
+        <span>Creative Marketing Agency</span>
+      </div>
+    </footer>
+  </div>
+
+  <div class="hint" id="hint">
+    <span class="bar"></span>
+    Move to draw <kbd>·</kbd> Click to sign <kbd>·</kbd> Press <kbd>C</kbd> to clear
+    <span class="bar"></span>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Link copied</div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('ink');
+  const ctx = canvas.getContext('2d', { alpha:true });
+  const cursor = document.getElementById('cursor');
+  const hint = document.getElementById('hint');
+  const toast = document.getElementById('toast');
+  const wordmark = document.getElementById('wordmark');
+  const chars = [...wordmark.querySelectorAll('.ch')];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0;
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth = window.innerWidth;
+    H = canvas.clientHeight = window.innerHeight;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Trail state
+  const trail = [];      // recent points for ribbon
+  const sparks = [];     // signature ripples / particles
+  let last = null;
+  let lastMove = performance.now();
+  let mouseX = W/2, mouseY = H/2;
+  let hasInteracted = false;
+
+  function addPoint(x, y, pressure=1){
+    const now = performance.now();
+    const v = last ? Math.hypot(x-last.x, y-last.y) / Math.max(1, now-last.t) : 0;
+    trail.push({ x, y, t: now, v, p: pressure });
+    if (trail.length > 220) trail.shift();
+    last = { x, y, t: now };
+    lastMove = now;
+  }
+
+  function signature(x, y){
+    // ripple
+    sparks.push({ kind:'ring', x, y, t: performance.now(), life: 900, r0: 4, r1: 90 });
+    // little burst of particles
+    const n = 14;
+    for (let i=0; i<n; i++){
+      const a = (i / n) * Math.PI * 2 + Math.random()*0.4;
+      const sp = 0.7 + Math.random()*1.6;
+      sparks.push({
+        kind:'spark', x, y, t: performance.now(), life: 1100 + Math.random()*600,
+        vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 0.3
+      });
+    }
+  }
+
+  // Pointer
+  function onPointerMove(e){
+    const x = e.clientX, y = e.clientY;
+    mouseX = x; mouseY = y;
+    cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    addPoint(x, y, e.pressure || 1);
+    if (!hasInteracted){
+      hasInteracted = true;
+      hint.classList.remove('show');
+    }
+  }
+  function onPointerDown(e){
+    cursor.classList.add('hot');
+    signature(e.clientX, e.clientY);
+  }
+  function onPointerUp(){ cursor.classList.remove('hot'); }
+  function onPointerLeave(){
+    cursor.style.transform = `translate3d(-100px,-100px,0)`;
+    last = null;
+  }
+
+  window.addEventListener('pointermove', onPointerMove, { passive:true });
+  window.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('pointercancel', onPointerUp);
+  document.addEventListener('mouseleave', onPointerLeave);
+
+  // Touch: signature on tap
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1){
+      const t = e.touches[0];
+      signature(t.clientX, t.clientY);
+    }
+  }, { passive:true });
+
+  // Wordmark parallax (subtle per-letter)
+  function updateWordmark(){
+    if (reduceMotion) return;
+    const cx = W/2, cy = H/2;
+    const dx = (mouseX - cx) / W;   // -0.5 .. 0.5
+    const dy = (mouseY - cy) / H;
+    chars.forEach((ch, i) => {
+      const phase = (i - (chars.length-1)/2) / chars.length;  // -0.5..0.5
+      const tx = dx * (8 + phase*6);
+      const ty = dy * (5 + Math.abs(phase)*4);
+      ch.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
+    });
+  }
+
+  // Render loop
+  function frame(){
+    const now = performance.now();
+
+    // fade existing canvas — gives a graceful trail
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(13,12,41,0.06)';
+    ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation = 'source-over';
+
+    // draw trail as smooth glowing line
+    if (trail.length > 1){
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // outer glow
+      ctx.strokeStyle = 'rgba(60,255,147,0.10)';
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.moveTo(trail[0].x, trail[0].y);
+      for (let i=1; i<trail.length; i++){
+        const p = trail[i];
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+
+      // crisp core line, taper by recency + speed
+      for (let i=1; i<trail.length; i++){
+        const p0 = trail[i-1], p1 = trail[i];
+        const age = (now - p1.t) / 2200;          // 0..1+
+        if (age > 1) continue;
+        const a = 1 - age;
+        const speedTaper = Math.max(0.25, 1 - Math.min(1, p1.v * 0.06));
+        const w = 1.6 * a * speedTaper + 0.4;
+        ctx.strokeStyle = `rgba(60,255,147,${(0.85*a).toFixed(3)})`;
+        ctx.lineWidth = w;
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.stroke();
+      }
+
+      // expire old points
+      while (trail.length && now - trail[0].t > 2200) trail.shift();
+    }
+
+    // sparks / signatures
+    for (let i = sparks.length - 1; i >= 0; i--){
+      const s = sparks[i];
+      const age = now - s.t;
+      if (age > s.life){ sparks.splice(i,1); continue; }
+      const k = age / s.life;       // 0..1
+      const a = 1 - k;
+      if (s.kind === 'ring'){
+        const r = s.r0 + (s.r1 - s.r0) * k;
+        ctx.strokeStyle = `rgba(60,255,147,${(0.55*a).toFixed(3)})`;
+        ctx.lineWidth = 1 + 1.4*a;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, r, 0, Math.PI*2);
+        ctx.stroke();
+      } else {
+        s.x += s.vx; s.y += s.vy;
+        s.vy += 0.012;       // soft gravity
+        s.vx *= 0.992; s.vy *= 0.992;
+        ctx.fillStyle = `rgba(60,255,147,${(0.9*a).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 1.2 + 1.2*a, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    updateWordmark();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Hint timing — show after a beat, hide on first interaction
+  setTimeout(() => { if (!hasInteracted) hint.classList.add('show'); }, 700);
+  setTimeout(() => { hint.classList.remove('show'); }, 9000);
+
+  // Clear button + 'C' key
+  function clearAll(){
+    trail.length = 0;
+    sparks.length = 0;
+    ctx.clearRect(0,0,W,H);
+  }
+  document.getElementById('clearBtn').addEventListener('click', clearAll);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'c' || e.key === 'C') clearAll();
+  });
+
+  // Share
+  const shareBtn = document.getElementById('shareBtn');
+  shareBtn.addEventListener('click', async () => {
+    const url = window.location.href;
+    const data = {
+      title: 'Astutely — formerly AY Studio',
+      text: 'Sharp thinking, beautifully applied.',
+      url
+    };
+    try {
+      if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
+        await navigator.share(data);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.textContent = 'Link copied';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1600);
+    } catch (err) {
+      toast.textContent = 'Copy failed';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1600);
+    }
+  });
+})();
+</script>
+</body>
+</html>
