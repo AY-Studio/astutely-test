@@ -246,20 +246,69 @@
     .wordmark{ transition:none }
   }
 
-  /* Mobile */
+  /* Tablet — 1024 → 721 */
+  @media (max-width:1024px) and (min-width:721px){
+    .wordmark{ width:clamp(320px, 78vw, 640px) }
+    .tagline{ font-size:clamp(15px, 2vw, 18px); margin-top:24px }
+    .rebrand{ font-size:11.5px; letter-spacing:.22em; margin-top:24px }
+    .meta{ font-size:13.5px }
+  }
+
+  /* Mobile — ≤720 */
   @media (max-width: 720px){
+    :root{ --pad:20px }
     body{ cursor:auto }
     .cursor{ display:none }
     .stage{ cursor:auto }
     button, a{ cursor:pointer }
-    .top{ align-items:flex-start }
-    .bottom{ grid-template-columns:1fr; gap:16px; text-align:center }
-    .meta{ flex-wrap:wrap; gap:10px; justify-self:center; justify-content:center }
+
+    .wordmark{ width:88vw; max-width:520px }
+    .tagline{
+      font-size:16px; line-height:1.35;
+      margin-top:22px;
+      padding:0 8px;
+    }
+    .rebrand{
+      font-size:11px; letter-spacing:.2em;
+      margin-top:24px;
+      padding:0 16px; line-height:1.45;
+      flex-direction:column; gap:6px;
+      align-items:center;
+    }
+    .rebrand .rb-sep{ display:none }
+    .rebrand .rb-tag{ font-weight:500 }
+
+    .bottom{
+      grid-template-columns:1fr;
+      gap:18px;
+      text-align:center;
+      padding-top:18px;
+      border-top:1px solid var(--line-2);
+    }
+    .meta{
+      flex-direction:column; gap:6px;
+      justify-self:center; justify-content:center; align-items:center;
+      font-size:13.5px; line-height:1.5;
+    }
     .meta .sep{ display:none }
-    .actions{ justify-self:center; justify-content:center }
-    .hint{ bottom:calc(var(--pad) + 130px); font-size:9px; letter-spacing:.22em }
+    .actions{
+      justify-self:center; justify-content:center; gap:10px;
+      width:100%; max-width:340px; margin-inline:auto;
+    }
+    .btn{ flex:1; padding:12px 16px; font-size:13px; min-height:44px; justify-content:center }
+
+    .hint{ bottom:calc(var(--pad) + 110px); font-size:9px; letter-spacing:.22em }
     .eyebrow{ font-size:10px; letter-spacing:.22em }
-    .tagline{ font-size:14px }
+  }
+
+  /* Phone narrow — ≤480 */
+  @media (max-width:480px){
+    :root{ --pad:16px }
+    .wordmark{ width:90vw }
+    .tagline{ font-size:15px }
+    .rebrand{ font-size:10.5px; letter-spacing:.18em }
+    .meta{ font-size:13px }
+    .btn{ padding:13px 14px }
   }
 </style>
 </head>
@@ -298,23 +347,18 @@
         <a href="mailto:hello@astutelyagency.com">hello@astutelyagency.com</a>
       </div>
       <div class="actions">
-        <button class="btn" id="clearBtn" type="button" title="Clear the canvas">
-          Clear <span class="k">[C]</span>
-        </button>
-        <button class="btn primary" id="shareBtn" type="button" title="Copy link to share">
-          Share <span class="k">↗</span>
-        </button>
+        <a class="btn primary" href="mailto:hello@astutelyagency.com?subject=Start%20a%20Project">
+          Start a Project <span class="arr" aria-hidden="true">→</span>
+        </a>
       </div>
     </footer>
   </div>
 
   <div class="hint" id="hint">
     <span class="bar"></span>
-    Move to draw <kbd>·</kbd> Click to sign <kbd>·</kbd> Press <kbd>C</kbd> to clear
+    Move to draw
     <span class="bar"></span>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite">Link copied</div>
 </div>
 
 <script>
@@ -323,7 +367,6 @@
   const ctx = canvas.getContext('2d', { alpha:true });
   const cursor = document.getElementById('cursor');
   const hint = document.getElementById('hint');
-  const toast = document.getElementById('toast');
   const wordmark = document.getElementById('wordmark');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -505,42 +548,6 @@
   setTimeout(() => { if (!hasInteracted) hint.classList.add('show'); }, 700);
   setTimeout(() => { hint.classList.remove('show'); }, 9000);
 
-  // Clear button + 'C' key
-  function clearAll(){
-    trail.length = 0;
-    sparks.length = 0;
-    ctx.clearRect(0,0,W,H);
-    // Line-taper progress persists through Clear — the journey isn't undone.
-  }
-  document.getElementById('clearBtn').addEventListener('click', clearAll);
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'c' || e.key === 'C') clearAll();
-  });
-
-  // Share
-  const shareBtn = document.getElementById('shareBtn');
-  shareBtn.addEventListener('click', async () => {
-    const url = window.location.href;
-    const data = {
-      title: 'Astutely — formerly AY Studio',
-      text: 'Sharp thinking, beautifully applied.',
-      url
-    };
-    try {
-      if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
-        await navigator.share(data);
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      toast.textContent = 'Link copied';
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 1600);
-    } catch (err) {
-      toast.textContent = 'Copy failed';
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 1600);
-    }
-  });
 })();
 </script>
 </body>
