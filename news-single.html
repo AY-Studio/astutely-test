@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>AY Studio is now Astutely. Same hand, sharper pencil. — News — Astutely</title>
+<meta name="description" content="A quiet announcement, and a longer note on what does — and does not — change. From Astutely, formerly AY Studio." />
+<meta name="theme-color" content="#3cff93" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d0c29;
+    --ink-2:#161538;
+    --paper:#f4f2eb;
+    --vis:#3cff93;
+    --vis-d:#22dd75;
+    --line:rgba(13,12,41,.18);
+    --line-2:rgba(13,12,41,.38);
+    --mute:rgba(13,12,41,.7);
+    --display:'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --pad:clamp(20px, 4vw, 56px);
+    --max:1200px;
+    --reading:760px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth }
+  body{
+    background:var(--vis);
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:18px;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--ink); color:var(--vis) }
+  a{ color:inherit }
+
+  /* Skip link */
+  .skip{
+    position:absolute; left:-9999px; top:0;
+    background:var(--ink); color:var(--vis);
+    padding:12px 18px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    z-index:100;
+  }
+  .skip:focus{ left:16px; top:16px; outline:2px solid var(--ink); outline-offset:3px }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:3px;
+    border-radius:1px;
+  }
+
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      repeating-radial-gradient(circle at 0 0, rgba(13,12,41,.06) 0 1px, transparent 1px 3px);
+    mix-blend-mode:multiply; opacity:.5;
+  }
+
+  /* ============ NAV ============ */
+  .site-nav{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    padding:24px var(--pad);
+    border-bottom:1px solid var(--line);
+  }
+  .site-nav .logo{ display:inline-block; line-height:0; text-decoration:none }
+  .site-nav .logo svg{ width:118px; height:auto; display:block }
+  .site-nav .logo svg path{ fill:var(--ink) }
+  .site-nav nav ul{ list-style:none; display:flex; gap:28px; align-items:center }
+  .site-nav nav a{
+    font-family:var(--mono); font-size:12px; font-weight:400;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink); text-decoration:none;
+    padding:6px 0; border-bottom:1px solid transparent;
+    transition:border-color .2s ease;
+  }
+  .site-nav nav a[aria-current="page"]{ border-bottom-color:var(--ink) }
+  .site-nav nav a:hover{ border-bottom-color:var(--ink) }
+
+  /* ============ ARTICLE LAYOUT ============ */
+  main{ position:relative; z-index:1 }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) }
+  .reading{ max-width:var(--reading); margin:0 auto }
+
+  .breadcrumb{
+    padding:24px 0;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+  }
+  .breadcrumb ol{ list-style:none; display:flex; gap:10px; flex-wrap:wrap; align-items:center }
+  .breadcrumb li{ display:inline-flex; align-items:center; gap:10px }
+  .breadcrumb li + li::before{
+    content:"/"; color:var(--ink); opacity:.45; font-family:var(--display);
+  }
+  .breadcrumb a{
+    color:var(--ink); text-decoration:none;
+    border-bottom:1px solid transparent; padding-bottom:1px;
+    min-height:24px; display:inline-flex; align-items:center;
+  }
+  .breadcrumb a:hover{ border-bottom-color:var(--ink) }
+  .breadcrumb [aria-current="page"]{ opacity:.7 }
+
+  .article-head{
+    padding:clamp(32px,5vw,64px) 0 clamp(32px,4vw,48px);
+    border-bottom:1px solid var(--line);
+  }
+  .meta-row{
+    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink); margin-bottom:28px;
+  }
+  .meta-row .category{
+    border:1px solid var(--ink); padding:4px 10px; line-height:1; min-height:24px;
+    display:inline-flex; align-items:center;
+  }
+  .meta-row .dot{ opacity:.45 }
+  .article-head h1{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(36px, 5.5vw, 76px); line-height:1; letter-spacing:-.035em;
+    color:var(--ink);
+  }
+  .article-head .lede{
+    margin-top:28px;
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(18px, 1.6vw, 22px); line-height:1.55; color:var(--ink);
+    max-width:60ch;
+  }
+  .byline{
+    margin-top:40px;
+    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .byline .author{ font-weight:500 }
+
+  /* ============ ARTICLE BODY (WYSIWYG) ============ */
+  .article-body{
+    padding:clamp(40px,5vw,72px) 0 clamp(48px,6vw,96px);
+  }
+  .article-body > * + *{ margin-top:1.4em }   /* default vertical rhythm */
+
+  .article-body h2,
+  .article-body h3,
+  .article-body h4,
+  .article-body h5,
+  .article-body h6{
+    font-family:var(--display); font-weight:400; color:var(--ink); letter-spacing:-.015em;
+  }
+  .article-body h2{
+    font-size:clamp(28px, 3.4vw, 40px); line-height:1.15; letter-spacing:-.025em;
+    margin-top:1.8em; margin-bottom:.4em;
+    padding-bottom:.5em; border-bottom:1px solid var(--line);
+  }
+  .article-body h3{
+    font-size:clamp(22px, 2.4vw, 28px); line-height:1.2;
+    margin-top:1.6em; margin-bottom:.3em;
+  }
+  .article-body h4{
+    font-size:clamp(18px, 1.8vw, 21px); font-weight:500; line-height:1.3;
+    margin-top:1.4em; margin-bottom:.3em;
+  }
+  .article-body h5{
+    font-size:15px; font-weight:500; line-height:1.4;
+    margin-top:1.2em; margin-bottom:.3em;
+    text-transform:uppercase; letter-spacing:.08em;
+  }
+  .article-body h6{
+    font-family:var(--mono);
+    font-size:12px; font-weight:400; line-height:1.4;
+    text-transform:uppercase; letter-spacing:.18em;
+    margin-top:1.2em; margin-bottom:.3em;
+    color:var(--ink);
+  }
+
+  .article-body p{
+    font-size:17.5px; line-height:1.7; color:var(--ink);
+  }
+  .article-body p > strong{ font-weight:600 }
+  .article-body p > em{ font-style:italic }
+
+  /* Inline links */
+  .article-body a{
+    color:var(--ink);
+    text-decoration:underline;
+    text-decoration-thickness:1.5px;
+    text-underline-offset:3px;
+  }
+  .article-body a:hover{ background:rgba(13,12,41,.1) }
+
+  /* Lists */
+  .article-body ul,
+  .article-body ol{
+    padding-left:1.6em; font-size:17.5px; line-height:1.7;
+  }
+  .article-body ul li,
+  .article-body ol li{
+    margin-top:.4em;
+  }
+  .article-body ul li::marker{ color:var(--ink) }
+  .article-body ol li::marker{ color:var(--ink); font-family:var(--mono); font-size:.92em }
+  .article-body ul ul, .article-body ol ol,
+  .article-body ul ol, .article-body ol ul{ margin-top:.4em }
+
+  /* Description list */
+  .article-body dl{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:18px 0;
+    display:grid; grid-template-columns:200px 1fr; gap:14px 28px;
+  }
+  .article-body dt{
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink); padding-top:2px;
+  }
+  .article-body dd{ font-size:17px; line-height:1.6 }
+
+  /* Blockquote */
+  .article-body blockquote{
+    margin:1.8em 0;
+    padding:8px 0 8px 28px;
+    border-left:3px solid var(--ink);
+    font-family:var(--display); font-weight:400; font-style:italic;
+    font-size:clamp(20px, 2.2vw, 26px); line-height:1.45;
+    color:var(--ink);
+  }
+  .article-body blockquote p + p{ margin-top:.6em }
+  .article-body blockquote cite{
+    display:block; margin-top:14px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    font-style:normal; color:var(--ink);
+  }
+  .article-body blockquote cite::before{ content:"— " }
+
+  /* Inline code & code block */
+  .article-body code{
+    font-family:var(--mono); font-size:.92em;
+    background:rgba(13,12,41,.1); padding:2px 6px;
+    border-radius:2px;
+  }
+  .article-body pre{
+    background:var(--ink); color:var(--vis);
+    padding:20px 22px; overflow-x:auto;
+    font-family:var(--mono); font-size:14px; line-height:1.6;
+    border:1px solid var(--ink);
+    margin:1.6em 0;
+  }
+  .article-body pre code{ background:transparent; padding:0; color:inherit }
+
+  /* Horizontal rule */
+  .article-body hr{
+    border:0; height:1px; background:var(--line-2);
+    margin:2.4em 0;
+  }
+
+  /* Tables */
+  .article-body .table-wrap{
+    margin:1.6em 0;
+    overflow-x:auto;
+    border:1px solid var(--ink);
+  }
+  .article-body table{
+    width:100%; border-collapse:collapse;
+    font-size:15.5px;
+  }
+  .article-body caption{
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    text-align:left; padding:12px 16px;
+    background:var(--ink); color:var(--vis);
+  }
+  .article-body th,
+  .article-body td{
+    padding:14px 18px; text-align:left; line-height:1.5;
+    border-bottom:1px solid var(--line);
+  }
+  .article-body th{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    font-weight:400; background:rgba(13,12,41,.08);
+    border-bottom:1px solid var(--ink);
+  }
+  .article-body tbody tr:last-child td{ border-bottom:0 }
+  .article-body tbody tr:nth-child(2n) td{ background:rgba(13,12,41,.04) }
+
+  /* Figures / images */
+  .article-body figure{
+    margin:1.8em 0;
+  }
+  .article-body figure img{
+    max-width:100%; height:auto; display:block;
+    border:1px solid var(--ink);
+  }
+  .article-body figcaption{
+    margin-top:12px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+
+  /* Pull-out highlight */
+  .article-body mark{
+    background:var(--ink); color:var(--vis);
+    padding:2px 6px;
+  }
+
+  /* Aside / callout */
+  .article-body aside.callout{
+    margin:1.8em 0;
+    padding:22px 26px;
+    border:1px solid var(--ink);
+    background:rgba(13,12,41,.06);
+  }
+  .article-body aside.callout p{ font-size:16px; line-height:1.6 }
+  .article-body aside.callout > p:first-child{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  /* ============ ARTICLE FOOT — share + related ============ */
+  .article-foot{
+    padding:32px 0 48px;
+    border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .tags{
+    display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .tags a{
+    display:inline-flex; align-items:center;
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    text-decoration:none; color:var(--ink);
+    padding:6px 10px; border:1px solid var(--ink); min-height:30px;
+  }
+  .tags a:hover{ background:rgba(13,12,41,.1) }
+  .share{
+    display:flex; gap:12px; align-items:center;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  }
+  .share a{
+    text-decoration:none; color:var(--ink);
+    border-bottom:1px solid var(--ink); padding-bottom:2px;
+    min-height:24px; display:inline-flex; align-items:center;
+  }
+
+  /* Next / previous nav */
+  .article-pager{
+    border-top:1px solid var(--line);
+    padding:32px 0;
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+  }
+  .article-pager a{
+    display:block; text-decoration:none; color:var(--ink);
+    padding:18px 4px;
+    transition:padding .2s ease;
+  }
+  .article-pager a:hover{ padding-left:8px }
+  .article-pager a.next{ text-align:right }
+  .article-pager a.next:hover{ padding-left:0; padding-right:8px }
+  .article-pager .lbl{
+    display:block;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    margin-bottom:8px; opacity:.7;
+  }
+  .article-pager .ttl{
+    display:block;
+    font-family:var(--display); font-weight:400; font-size:18px; line-height:1.3;
+    letter-spacing:-.005em;
+  }
+
+  /* ============ FOOTER ============ */
+  .site-footer{
+    margin-top:clamp(40px, 6vw, 80px);
+    padding:clamp(48px, 6vw, 80px) var(--pad) 32px;
+    border-top:1px solid var(--line);
+    position:relative; z-index:1;
+  }
+  .footer-inner{
+    max-width:var(--max); margin:0 auto;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:48px;
+  }
+  .footer-brand .mark{
+    font-family:var(--display); font-weight:500; font-size:18px;
+    color:var(--ink); letter-spacing:-.02em;
+  }
+  .footer-brand p{
+    margin-top:14px; font-size:14.5px; color:var(--ink); max-width:34ch; line-height:1.55;
+  }
+  .footer-col h3{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink); font-weight:400; margin-bottom:14px;
+  }
+  .footer-col ul{ list-style:none; display:flex; flex-direction:column; gap:8px }
+  .footer-col a{
+    font-size:14.5px; color:var(--ink); text-decoration:none;
+    border-bottom:1px solid transparent; padding-bottom:1px;
+    transition:border-color .2s ease;
+    min-height:24px; display:inline-flex; align-items:center;
+  }
+  .footer-col a:hover{ border-bottom-color:var(--ink) }
+  .footer-bottom{
+    max-width:var(--max); margin:0 auto;
+    margin-top:48px; padding-top:24px;
+    border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width:880px){
+    .article-body dl{ grid-template-columns:1fr; gap:6px 0 }
+    .article-body dt{ padding-top:14px }
+    .article-pager{ grid-template-columns:1fr; gap:8px }
+    .article-pager a.next{ text-align:left }
+  }
+  @media (max-width:720px){
+    body{ font-size:17px }
+    .site-nav{ padding:20px var(--pad) }
+    .site-nav .logo svg{ width:96px }
+    .site-nav nav ul{ gap:18px }
+    .article-body p,
+    .article-body ul, .article-body ol{ font-size:16.5px }
+    .article-foot{ flex-direction:column; gap:18px }
+    .footer-inner{ grid-template-columns:1fr; gap:36px }
+    .footer-bottom{ flex-direction:column; gap:8px }
+  }
+  @media (max-width:480px){
+    :root{ --pad:18px }
+    .article-body blockquote{ padding-left:20px }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; scroll-behavior:auto !important }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <a class="logo" href="/" aria-label="Astutely — home">
+    <svg viewBox="0 0 1111.33 262.32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <g>
+        <path d="M12.83,147.49l30.85-2.51L121.29,21.5l55.31,13.87-.76,190.04-47.97-14.3.42-45.87-64.73,5.35-36.35,58.39L0,214.43l25.87-40.91-6.82.67-6.21-26.71ZM129.42,64.63l-48.06,77.16,47.29-3.67.77-73.49Z"/>
+        <path d="M269.72,94.7c-6.92.17-12.72,1.66-17.37,4.47-4.66,2.82-6.95,5.99-6.87,9.54.06,2.7,2.02,4.85,5.86,6.45,3.84,1.6,8.77,3.04,14.8,4.33,6.02,1.29,12.4,2.83,19.11,4.61,6.71,1.78,13.11,4.25,19.18,7.39,6.07,3.15,11.07,7.3,14.99,12.43,3.92,5.14,5.99,11.85,6.18,20.12s-1.86,15.97-6.16,23.08c-4.31,7.11-10.32,13.38-18.04,18.8-7.72,5.42-16.79,9.69-27.18,12.81-10.4,3.12-21.59,4.83-33.57,5.11-16.55.4-29.99-2.24-40.35-7.9-10.36-5.66-15.65-13.47-15.89-23.43-.16-6.75,2.06-12.84,6.66-18.28,4.6-5.43,11.08-9.6,19.46-12.5l30.94,11.92c-7.52,3.39-11.22,7.62-11.1,12.68.06,2.7,1.6,4.99,4.6,6.86,3,1.87,7.71,2.73,14.12,2.57,9.62-.23,17.17-2.48,22.64-6.75,5.47-4.27,8.16-8.51,8.06-12.73-.09-3.54-2.01-6.24-5.77-8.1-3.76-1.85-8.53-3.34-14.3-4.47-5.77-1.13-11.93-2.41-18.46-3.86-6.54-1.45-12.75-3.49-18.64-6.14-5.89-2.65-10.71-6.41-14.46-11.31-3.75-4.89-5.72-11.3-5.91-19.24-.25-10.29,2.86-19.66,9.33-28.09,6.47-8.43,15.26-15.14,26.37-20.14,11.11-4.99,23.51-7.66,37.18-7.99,10.29-.25,19.74.92,28.33,3.5,8.59,2.58,15.52,6.38,20.8,11.41,5.27,5.03,7.99,11,8.16,17.92.11,4.56-.97,8.98-3.23,13.25-2.26,4.28-5.55,7.99-9.87,11.13l-35.79-13.33c3.32-2.27,4.95-4.76,4.89-7.46-.06-2.36-1.67-4.43-4.84-6.22-3.17-1.78-7.79-2.6-13.87-2.45Z"/>
+        <path d="M339.1,67.96l37.46-1.66,13.95-41.38,43.16,14.17-8.27,24.77,39.67-1.46-8.9,27.58-40.24,1.73-23.64,70.75c5.43-5.87,11-11.62,16.69-17.25,5.69-5.62,11.52-11.04,17.47-16.25l17.98,20.85c-12.75,10.95-25.1,22.35-37.06,34.21-11.96,11.86-23.53,24.09-34.72,36.68l-43.16-14.17,37.84-112.39-21,1.01-7.24-27.19Z"/>
+        <path d="M609.35,73.88l-47.51,142.26-43.16-14.17,22.48-66.16c-10.8,14.45-21.82,28.56-33.06,42.34-11.24,13.78-22.7,27.15-34.38,40.1l-42.4-14.18,47.51-142.26,43.16,14.17-27.2,80.46c13.31-15.52,26.1-31.32,38.39-47.41,12.28-16.09,23.54-32.53,33.78-49.33l42.4,14.18Z"/>
+        <path d="M621.33,61.13l21.17-1.27,13.96-41.38,43.16,14.17-8.27,24.77,40.65-1.07-9.87,27.19-40.24,1.73-23.64,70.75c5.43-5.87,10.99-11.62,16.69-17.25,5.69-5.62,11.52-11.04,17.47-16.25l17.98,20.85c-12.75,10.95-25.1,22.35-37.06,34.21-11.96,11.86-23.53,24.09-34.72,36.68l-43.16-14.17,37.84-112.39-21,1.01,9.04-27.58Z"/>
+        <path d="M838.08,172.55c-5.98,11.12-14.76,20.24-26.33,27.36-11.57,7.12-24.36,10.85-38.37,11.18-13.17.32-24.16-2.04-32.98-7.06-8.82-5.02-15.49-11.92-20.01-20.68-4.52-8.76-6.91-18.62-7.17-29.6-.15-6.24.21-12.21,1.09-17.89.88-5.68,2.26-11.41,4.15-17.2,4.25-12.94,10.57-24.15,18.95-33.65,8.39-9.49,18.05-16.9,28.98-22.23,10.93-5.33,22.39-8.14,34.38-8.43,15.53-.37,27.98,2.96,37.36,10,9.37,7.04,14.21,16.72,14.51,29.04.37,15.36-6.55,27.9-20.76,37.62-14.21,9.72-34.62,15.99-61.24,18.83l-8.26-16.78c-2.47,9.86-3.61,18.58-3.43,26.18s1.71,13.22,4.6,17.37c2.89,4.15,7.12,6.16,12.69,6.03,5.23-.13,10.16-2.4,14.78-6.82,4.62-4.42,8.52-11.06,11.68-19.92l35.36,16.63ZM798.4,81.78c-5.91.14-11.69,3.66-17.36,10.55-5.66,6.89-10.7,16.9-15.11,30.01,10.27-1.26,18.57-3.61,24.91-7.06,6.33-3.45,10.97-7.36,13.91-11.74,2.94-4.38,4.36-8.42,4.27-12.14-.16-6.58-3.7-9.79-10.62-9.63Z"/>
+        <path d="M900.76,0l43.16,14.17-65.51,194.38-43.16-14.17L900.76,0Z"/>
+        <path d="M1078.43,62.83l-67.42,199.49-43.16-14.17,40.92-121.33c-20.62,27.52-42.53,54.23-65.72,80.12l-43.16-14.17,47.52-142.01,43.16,14.17-26.71,79.94c12.97-15.34,25.48-31.05,37.51-47.14,12.03-16.08,23.16-32.44,33.41-49.07l43.66,14.15Z"/>
+        <path d="M1068.74,146.92l42.59,11.65-15.14,44.7-42.59-11.65,15.14-44.7Z"/>
+      </g>
+    </svg>
+  </a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="news.html" aria-current="page">News</a></li>
+      <li><a href="mailto:hello@astutelyagency.com">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- Breadcrumb -->
+  <nav class="wrap" aria-label="Breadcrumb">
+    <div class="breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><span aria-current="page">AY Studio is now Astutely</span></li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Article header -->
+  <header class="article-head">
+    <div class="wrap">
+      <div class="reading">
+        <p class="meta-row">
+          <time datetime="2026-04-22">22 April 2026</time>
+          <span class="dot" aria-hidden="true">·</span>
+          <span class="category">Studio</span>
+          <span class="dot" aria-hidden="true">·</span>
+          <span>8 min read</span>
+        </p>
+        <h1>AY Studio is now Astutely. Same hand, sharper pencil.</h1>
+        <p class="lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. After nine years building brands, we have a new name that finally matches how we already think — considered, clear-eyed, and useful. A quiet announcement and a longer note on what does, and does not, change.</p>
+        <p class="byline">
+          <span class="author">By Robert Annett</span>
+          <span class="dot" aria-hidden="true">·</span>
+          <span>Managing Partner</span>
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Article body — full WYSIWYG demo -->
+  <article class="article-body">
+    <div class="wrap"><div class="reading">
+
+      <p>Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit</strong>. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <em>Duis aute irure dolor</em> in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+      <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque <a href="#">laudantium totam rem aperiam</a>, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+      <h2>The shift, briefly</h2>
+
+      <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+
+      <p>Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
+
+      <h3>What is changing</h3>
+
+      <p>Nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. The list below summarises the immediate, practical shifts:</p>
+
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+        <li>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+          <ul>
+            <li>Nisi ut aliquip ex ea commodo consequat.</li>
+            <li>Duis aute irure dolor in reprehenderit in voluptate.</li>
+            <li>Velit esse cillum dolore eu fugiat nulla pariatur.</li>
+          </ul>
+        </li>
+        <li>Excepteur sint occaecat cupidatat non proident, sunt in culpa.</li>
+        <li>Qui officia deserunt mollit anim id est laborum.</li>
+      </ul>
+
+      <h3>What is staying</h3>
+
+      <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+
+      <ol>
+        <li>Lorem ipsum dolor sit amet — the team you already work with.</li>
+        <li>Consectetur adipiscing elit — the way we run a project, end to end.</li>
+        <li>Sed do eiusmod tempor — the standard of work and the calm of pace.</li>
+        <li>Ut enim ad minim veniam — the address, the email, the phone, the people.</li>
+      </ol>
+
+      <h2>A note on the work</h2>
+
+      <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.</p>
+
+      <blockquote>
+        <p>Most brands do not need more marketing. They need <mark>better decisions.</mark></p>
+        <cite>From the Astutely studio note, 2026</cite>
+      </blockquote>
+
+      <p>Omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+
+      <h3>Definitions, briefly</h3>
+
+      <p>The terms we keep using on calls — written down for reference.</p>
+
+      <dl>
+        <dt>Astute</dt>
+        <dd>Having or showing an ability to accurately assess situations or people and turn this to one&rsquo;s advantage.</dd>
+        <dt>Sharp thinking</dt>
+        <dd>Lorem ipsum dolor sit amet — judgement before activity, clarity before craft.</dd>
+        <dt>Beautifully applied</dt>
+        <dd>Sed do eiusmod tempor — work that is finished as carefully as it was conceived.</dd>
+        <dt>The studio</dt>
+        <dd>A small senior team based on the Second Floor, 144 High Street, Holywood, BT18 9HS.</dd>
+      </dl>
+
+      <h2>By the numbers</h2>
+
+      <p>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. The table below sets out the practical scope of the rename.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>What changes for clients</caption>
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Before</th>
+              <th scope="col">After</th>
+              <th scope="col">Action needed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Studio name</th>
+              <td>AY Studio</td>
+              <td>Astutely</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">Email</th>
+              <td>hello@ay.studio</td>
+              <td>hello@astutelyagency.com</td>
+              <td>Update contacts</td>
+            </tr>
+            <tr>
+              <th scope="row">Address</th>
+              <td>Belfast</td>
+              <td>144 High Street, Holywood</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">Team</th>
+              <td>Same four partners</td>
+              <td>Same four partners</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">Invoices</th>
+              <td>AY Studio Ltd</td>
+              <td>Astutely Ltd</td>
+              <td>Update payee</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>A small block of code, for completeness</h3>
+
+      <p>Where a snippet helps, we&rsquo;ll set it inline like <code>const studio = &lsquo;Astutely&rsquo;;</code> — and longer fragments in their own block.</p>
+
+      <pre><code>// Lorem ipsum, in code form
+const studio = {
+  name: 'Astutely',
+  formerly: 'AY Studio',
+  address: '144 High Street, Holywood, BT18 9HS',
+  email: 'hello@astutelyagency.com'
+};</code></pre>
+
+      <hr/>
+
+      <h2>How we&rsquo;re thinking about it</h2>
+
+      <p>Vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.</p>
+
+      <h3>The principle</h3>
+
+      <p>Quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+
+      <h4>An aside, for the curious</h4>
+
+      <aside class="callout">
+        <p>Editor&rsquo;s note</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — for clients reading this, your contracts and engagements continue exactly as before.</p>
+      </aside>
+
+      <h5>A small heading</h5>
+
+      <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit.</p>
+
+      <h6>The smallest heading we use</h6>
+
+      <p>Quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+
+      <figure>
+        <img src="https://placehold.co/1600x900/0d0c29/3cff93?text=Studio+%E2%80%94+Holywood&font=playfair" alt="Astutely studio in Holywood, Northern Ireland." />
+        <figcaption>The studio &mdash; 144 High Street, Holywood, BT18 9HS.</figcaption>
+      </figure>
+
+      <h2>Closing</h2>
+
+      <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus.</p>
+
+      <p>Ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. <strong>Same hand, sharper pencil.</strong></p>
+
+    </div></div>
+  </article>
+
+  <!-- Article foot — share + tags -->
+  <div class="wrap">
+    <div class="reading">
+      <div class="article-foot">
+        <div class="tags" aria-label="Tags">
+          <a href="news.html?cat=studio">Studio</a>
+          <a href="news.html?tag=rename">Rename</a>
+          <a href="news.html?tag=brand">Brand</a>
+        </div>
+        <div class="share" aria-label="Share">
+          <span aria-hidden="true">Share —</span>
+          <a href="#">LinkedIn</a>
+          <a href="#">Email</a>
+          <a href="#">Copy link</a>
+        </div>
+      </div>
+
+      <!-- Prev / next -->
+      <nav class="article-pager" aria-label="More articles">
+        <a class="prev" href="news-single.html">
+          <span class="lbl"><span aria-hidden="true">←</span> Previous</span>
+          <span class="ttl">Marketing built around a clear story, not a budget.</span>
+        </a>
+        <a class="next" href="news-single.html">
+          <span class="lbl">Next <span aria-hidden="true">→</span></span>
+          <span class="ttl">A website is a system, not a brochure.</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <p class="mark">Astutely<span style="color:var(--ink-2)">.</span></p>
+      <p>A creative marketing agency for brands that need clearer direction, stronger ideas, and work that feels as considered as it is effective.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Studio</h3>
+      <ul>
+        <li>144 High Street</li>
+        <li>Holywood, BT18 9HS</li>
+        <li><a href="mailto:hello@astutelyagency.com">hello@astutelyagency.com</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Index</h3>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="mailto:hello@astutelyagency.com">Start a project</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Astutely &middot; Formerly AY Studio</span>
+    <span>Sharp thinking, beautifully applied.</span>
+  </div>
+</footer>
+
+</body>
+</html>

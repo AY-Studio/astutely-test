@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>News &amp; thinking — Astutely</title>
+<meta name="description" content="Notes on brand, marketing, web and how we work. Sharp thinking from Astutely — formerly AY Studio." />
+<meta name="theme-color" content="#3cff93" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d0c29;
+    --ink-2:#161538;
+    --paper:#f4f2eb;
+    --vis:#3cff93;
+    --vis-d:#22dd75;
+    --line:rgba(13,12,41,.18);
+    --line-2:rgba(13,12,41,.38);
+    --mute:rgba(13,12,41,.7);     /* keeps WCAG AA at body sizes */
+    --display:'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --pad:clamp(20px, 4vw, 56px);
+    --max:1200px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth }
+  body{
+    background:var(--vis);
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:17px;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--ink); color:var(--vis) }
+  a{ color:inherit }
+
+  /* Skip link — WCAG */
+  .skip{
+    position:absolute; left:-9999px; top:0;
+    background:var(--ink); color:var(--vis);
+    padding:12px 18px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    z-index:100;
+  }
+  .skip:focus{ left:16px; top:16px; outline:2px solid var(--ink); outline-offset:3px }
+
+  /* Universal focus state */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:3px;
+    border-radius:1px;
+  }
+
+  /* Subtle paper grain over green */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      repeating-radial-gradient(circle at 0 0, rgba(13,12,41,.06) 0 1px, transparent 1px 3px);
+    mix-blend-mode:multiply; opacity:.55;
+  }
+
+  /* ============ NAV ============ */
+  .site-nav{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    padding:24px var(--pad);
+    border-bottom:1px solid var(--line);
+  }
+  .site-nav .logo{
+    display:inline-block; line-height:0; text-decoration:none;
+  }
+  .site-nav .logo svg{ width:118px; height:auto; display:block }
+  .site-nav .logo svg path{ fill:var(--ink) }
+  .site-nav nav ul{ list-style:none; display:flex; gap:28px; align-items:center }
+  .site-nav nav a{
+    font-family:var(--mono); font-size:12px; font-weight:400;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink); text-decoration:none;
+    padding:6px 0; border-bottom:1px solid transparent;
+    transition:border-color .2s ease;
+  }
+  .site-nav nav a[aria-current="page"]{ border-bottom-color:var(--ink) }
+  .site-nav nav a:hover{ border-bottom-color:var(--ink) }
+
+  /* ============ PAGE LAYOUT ============ */
+  main{ position:relative; z-index:1 }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) }
+
+  /* ============ PAGE HEAD ============ */
+  .page-head{
+    padding:clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; font-weight:400;
+    letter-spacing:.24em; text-transform:uppercase;
+    color:var(--ink); margin-bottom:20px;
+    display:inline-flex; align-items:center; gap:14px;
+  }
+  .eyebrow::before{
+    content:""; width:32px; height:1px; background:var(--ink); display:inline-block;
+  }
+  .page-head h1{
+    font-family:var(--display); font-weight:300;
+    font-size:clamp(40px, 6vw, 88px); line-height:.98; letter-spacing:-.035em;
+    color:var(--ink);
+    max-width:14ch;
+  }
+  .page-head .lede{
+    margin-top:24px;
+    font-size:clamp(18px, 1.6vw, 22px); line-height:1.5; color:var(--ink);
+    max-width:54ch; font-weight:400;
+  }
+
+  /* ============ TOOLBAR (filter row) ============ */
+  .toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    padding:24px 0;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .toolbar .count{
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink);
+  }
+  .filter{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .filter a{
+    display:inline-block;
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink); text-decoration:none;
+    padding:8px 12px; border:1px solid var(--ink);
+    background:transparent;
+    transition:background .2s ease;
+    min-height:32px; line-height:1;
+    display:inline-flex; align-items:center;
+  }
+  .filter a:hover{ background:rgba(13,12,41,.1) }
+  .filter a[aria-current="page"]{
+    background:var(--ink); color:var(--vis);
+  }
+
+  /* ============ ARTICLE LIST ============ */
+  .article-list{
+    display:grid; grid-template-columns:repeat(2, 1fr);
+    gap:0;
+    border-bottom:1px solid var(--line);
+  }
+  .article-card{
+    padding:clamp(28px, 4vw, 48px) clamp(20px, 3vw, 36px);
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    display:flex; flex-direction:column; gap:16px;
+    position:relative;
+    background:transparent;
+    transition:background .25s ease;
+  }
+  .article-card:nth-child(2n){ border-right:0 }
+  .article-card:hover{ background:rgba(13,12,41,.06) }
+  .article-card .meta{
+    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .article-card .meta .category{
+    border:1px solid var(--ink); padding:3px 8px; line-height:1; min-height:22px;
+    display:inline-flex; align-items:center;
+  }
+  .article-card h2{
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(22px, 2.4vw, 32px); line-height:1.15; letter-spacing:-.02em;
+    color:var(--ink);
+    max-width:22ch;
+  }
+  .article-card h2 a{
+    text-decoration:none; color:inherit;
+    background-image:linear-gradient(var(--ink),var(--ink));
+    background-position:0 100%;
+    background-size:0% 1.5px;
+    background-repeat:no-repeat;
+    transition:background-size .35s ease;
+  }
+  .article-card:hover h2 a, .article-card h2 a:focus-visible{
+    background-size:100% 1.5px;
+  }
+  .article-card p{
+    font-size:15.5px; line-height:1.55; color:var(--ink);
+    max-width:50ch;
+  }
+  .article-card .read-more{
+    margin-top:auto;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    text-decoration:none; color:var(--ink);
+    border-bottom:1px solid var(--ink); padding-bottom:3px;
+    align-self:flex-start; min-height:32px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .article-card .read-more:hover{ gap:10px }
+  .article-card.featured{
+    grid-column:1 / -1;
+    border-right:0;
+  }
+  .article-card.featured h2{
+    font-size:clamp(32px, 4vw, 56px); max-width:18ch;
+  }
+  .article-card.featured p{ font-size:17px; max-width:60ch }
+
+  /* ============ PAGINATION ============ */
+  .pagination{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:32px 0;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .pagination .pages{ display:flex; gap:8px }
+  .pagination .pages a{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:36px; min-height:36px; padding:6px 8px;
+    border:1px solid var(--ink); text-decoration:none; color:var(--ink);
+    transition:background .2s ease;
+  }
+  .pagination .pages a:hover{ background:rgba(13,12,41,.1) }
+  .pagination .pages a[aria-current="page"]{
+    background:var(--ink); color:var(--vis);
+  }
+  .pagination .nav-link{
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--ink); text-decoration:none;
+    border-bottom:1px solid var(--ink); padding-bottom:3px;
+    min-height:32px;
+  }
+  .pagination .nav-link[aria-disabled="true"]{
+    opacity:.4; pointer-events:none;
+  }
+
+  /* ============ FOOTER ============ */
+  .site-footer{
+    margin-top:clamp(56px, 7vw, 96px);
+    padding:clamp(48px, 6vw, 80px) var(--pad) 32px;
+    border-top:1px solid var(--line);
+    position:relative; z-index:1;
+  }
+  .footer-inner{
+    max-width:var(--max); margin:0 auto;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:48px;
+  }
+  .footer-brand .mark{
+    font-family:var(--display); font-weight:500; font-size:18px;
+    color:var(--ink); letter-spacing:-.02em;
+  }
+  .footer-brand p{
+    margin-top:14px; font-size:14.5px; color:var(--ink); max-width:34ch; line-height:1.55;
+  }
+  .footer-col h3{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--ink); font-weight:400; margin-bottom:14px;
+  }
+  .footer-col ul{ list-style:none; display:flex; flex-direction:column; gap:8px }
+  .footer-col a{
+    font-size:14.5px; color:var(--ink); text-decoration:none;
+    border-bottom:1px solid transparent; padding-bottom:1px;
+    transition:border-color .2s ease;
+    min-height:24px; display:inline-flex; align-items:center;
+  }
+  .footer-col a:hover{ border-bottom-color:var(--ink) }
+  .footer-bottom{
+    max-width:var(--max); margin:0 auto;
+    margin-top:48px; padding-top:24px;
+    border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink);
+  }
+
+  /* ============ Responsive ============ */
+  @media (max-width:1024px){
+    .article-list{ grid-template-columns:1fr 1fr }
+  }
+  @media (max-width:720px){
+    body{ font-size:16.5px }
+    .site-nav{ padding:20px var(--pad) }
+    .site-nav .logo svg{ width:96px }
+    .site-nav nav ul{ gap:18px }
+    .article-list{ grid-template-columns:1fr }
+    .article-card{ border-right:0 }
+    .article-card.featured h2{ font-size:clamp(28px, 7vw, 40px) }
+    .toolbar{ padding:18px 0 }
+    .footer-inner{ grid-template-columns:1fr; gap:36px }
+    .footer-bottom{ flex-direction:column; gap:8px }
+    .pagination{ flex-direction:column; gap:18px; align-items:flex-start }
+  }
+  @media (max-width:480px){
+    :root{ --pad:18px }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; scroll-behavior:auto !important }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <a class="logo" href="/" aria-label="Astutely — home">
+    <svg viewBox="0 0 1111.33 262.32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <g>
+        <path d="M12.83,147.49l30.85-2.51L121.29,21.5l55.31,13.87-.76,190.04-47.97-14.3.42-45.87-64.73,5.35-36.35,58.39L0,214.43l25.87-40.91-6.82.67-6.21-26.71ZM129.42,64.63l-48.06,77.16,47.29-3.67.77-73.49Z"/>
+        <path d="M269.72,94.7c-6.92.17-12.72,1.66-17.37,4.47-4.66,2.82-6.95,5.99-6.87,9.54.06,2.7,2.02,4.85,5.86,6.45,3.84,1.6,8.77,3.04,14.8,4.33,6.02,1.29,12.4,2.83,19.11,4.61,6.71,1.78,13.11,4.25,19.18,7.39,6.07,3.15,11.07,7.3,14.99,12.43,3.92,5.14,5.99,11.85,6.18,20.12s-1.86,15.97-6.16,23.08c-4.31,7.11-10.32,13.38-18.04,18.8-7.72,5.42-16.79,9.69-27.18,12.81-10.4,3.12-21.59,4.83-33.57,5.11-16.55.4-29.99-2.24-40.35-7.9-10.36-5.66-15.65-13.47-15.89-23.43-.16-6.75,2.06-12.84,6.66-18.28,4.6-5.43,11.08-9.6,19.46-12.5l30.94,11.92c-7.52,3.39-11.22,7.62-11.1,12.68.06,2.7,1.6,4.99,4.6,6.86,3,1.87,7.71,2.73,14.12,2.57,9.62-.23,17.17-2.48,22.64-6.75,5.47-4.27,8.16-8.51,8.06-12.73-.09-3.54-2.01-6.24-5.77-8.1-3.76-1.85-8.53-3.34-14.3-4.47-5.77-1.13-11.93-2.41-18.46-3.86-6.54-1.45-12.75-3.49-18.64-6.14-5.89-2.65-10.71-6.41-14.46-11.31-3.75-4.89-5.72-11.3-5.91-19.24-.25-10.29,2.86-19.66,9.33-28.09,6.47-8.43,15.26-15.14,26.37-20.14,11.11-4.99,23.51-7.66,37.18-7.99,10.29-.25,19.74.92,28.33,3.5,8.59,2.58,15.52,6.38,20.8,11.41,5.27,5.03,7.99,11,8.16,17.92.11,4.56-.97,8.98-3.23,13.25-2.26,4.28-5.55,7.99-9.87,11.13l-35.79-13.33c3.32-2.27,4.95-4.76,4.89-7.46-.06-2.36-1.67-4.43-4.84-6.22-3.17-1.78-7.79-2.6-13.87-2.45Z"/>
+        <path d="M339.1,67.96l37.46-1.66,13.95-41.38,43.16,14.17-8.27,24.77,39.67-1.46-8.9,27.58-40.24,1.73-23.64,70.75c5.43-5.87,11-11.62,16.69-17.25,5.69-5.62,11.52-11.04,17.47-16.25l17.98,20.85c-12.75,10.95-25.1,22.35-37.06,34.21-11.96,11.86-23.53,24.09-34.72,36.68l-43.16-14.17,37.84-112.39-21,1.01-7.24-27.19Z"/>
+        <path d="M609.35,73.88l-47.51,142.26-43.16-14.17,22.48-66.16c-10.8,14.45-21.82,28.56-33.06,42.34-11.24,13.78-22.7,27.15-34.38,40.1l-42.4-14.18,47.51-142.26,43.16,14.17-27.2,80.46c13.31-15.52,26.1-31.32,38.39-47.41,12.28-16.09,23.54-32.53,33.78-49.33l42.4,14.18Z"/>
+        <path d="M621.33,61.13l21.17-1.27,13.96-41.38,43.16,14.17-8.27,24.77,40.65-1.07-9.87,27.19-40.24,1.73-23.64,70.75c5.43-5.87,10.99-11.62,16.69-17.25,5.69-5.62,11.52-11.04,17.47-16.25l17.98,20.85c-12.75,10.95-25.1,22.35-37.06,34.21-11.96,11.86-23.53,24.09-34.72,36.68l-43.16-14.17,37.84-112.39-21,1.01,9.04-27.58Z"/>
+        <path d="M838.08,172.55c-5.98,11.12-14.76,20.24-26.33,27.36-11.57,7.12-24.36,10.85-38.37,11.18-13.17.32-24.16-2.04-32.98-7.06-8.82-5.02-15.49-11.92-20.01-20.68-4.52-8.76-6.91-18.62-7.17-29.6-.15-6.24.21-12.21,1.09-17.89.88-5.68,2.26-11.41,4.15-17.2,4.25-12.94,10.57-24.15,18.95-33.65,8.39-9.49,18.05-16.9,28.98-22.23,10.93-5.33,22.39-8.14,34.38-8.43,15.53-.37,27.98,2.96,37.36,10,9.37,7.04,14.21,16.72,14.51,29.04.37,15.36-6.55,27.9-20.76,37.62-14.21,9.72-34.62,15.99-61.24,18.83l-8.26-16.78c-2.47,9.86-3.61,18.58-3.43,26.18s1.71,13.22,4.6,17.37c2.89,4.15,7.12,6.16,12.69,6.03,5.23-.13,10.16-2.4,14.78-6.82,4.62-4.42,8.52-11.06,11.68-19.92l35.36,16.63ZM798.4,81.78c-5.91.14-11.69,3.66-17.36,10.55-5.66,6.89-10.7,16.9-15.11,30.01,10.27-1.26,18.57-3.61,24.91-7.06,6.33-3.45,10.97-7.36,13.91-11.74,2.94-4.38,4.36-8.42,4.27-12.14-.16-6.58-3.7-9.79-10.62-9.63Z"/>
+        <path d="M900.76,0l43.16,14.17-65.51,194.38-43.16-14.17L900.76,0Z"/>
+        <path d="M1078.43,62.83l-67.42,199.49-43.16-14.17,40.92-121.33c-20.62,27.52-42.53,54.23-65.72,80.12l-43.16-14.17,47.52-142.01,43.16,14.17-26.71,79.94c12.97-15.34,25.48-31.05,37.51-47.14,12.03-16.08,23.16-32.44,33.41-49.07l43.66,14.15Z"/>
+        <path d="M1068.74,146.92l42.59,11.65-15.14,44.7-42.59-11.65,15.14-44.7Z"/>
+      </g>
+    </svg>
+  </a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="news.html" aria-current="page">News</a></li>
+      <li><a href="mailto:hello@astutelyagency.com">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <header class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Insights &middot; 2026</p>
+      <h1>News &amp; thinking.</h1>
+      <p class="lede">Notes from the studio on brand, marketing, web and how we work. Sharp thinking, beautifully applied — written down.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- Toolbar -->
+    <div class="toolbar" role="search" aria-label="Filter articles">
+      <p class="count">Showing 1 — 7 of 24</p>
+      <div class="filter" role="tablist" aria-label="Categories">
+        <a href="news.html" aria-current="page">All</a>
+        <a href="news.html?cat=brand">Brand</a>
+        <a href="news.html?cat=marketing">Marketing</a>
+        <a href="news.html?cat=web">Web</a>
+        <a href="news.html?cat=systems">Systems</a>
+        <a href="news.html?cat=studio">Studio</a>
+      </div>
+    </div>
+
+    <!-- Article cards -->
+    <section class="article-list" aria-label="Recent articles">
+
+      <article class="article-card featured">
+        <p class="meta">
+          <time datetime="2026-04-22">22 April 2026</time>
+          <span class="category">Studio</span>
+          <span>8 min read</span>
+        </p>
+        <h2><a href="news-single.html">AY Studio is now Astutely. Same hand, sharper pencil.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. After nine years building brands, we have a new name that finally matches how we already think — considered, clear-eyed, and useful. A quiet announcement and a longer note on what does, and does not, change.</p>
+        <a class="read-more" href="news-single.html" aria-label="Read article: AY Studio is now Astutely">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-04-08">8 April 2026</time>
+          <span class="category">Brand</span>
+          <span>6 min read</span>
+        </p>
+        <h2><a href="news-single.html">Why most brand work fails before it begins.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-03-26">26 March 2026</time>
+          <span class="category">Marketing</span>
+          <span>4 min read</span>
+        </p>
+        <h2><a href="news-single.html">Marketing built around a clear story, not a budget.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-03-12">12 March 2026</time>
+          <span class="category">Web</span>
+          <span>7 min read</span>
+        </p>
+        <h2><a href="news-single.html">A website is a system, not a brochure.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-02-28">28 February 2026</time>
+          <span class="category">Systems</span>
+          <span>5 min read</span>
+        </p>
+        <h2><a href="news-single.html">CRM, automation and the unglamorous work of growth.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-02-14">14 February 2026</time>
+          <span class="category">Brand</span>
+          <span>3 min read</span>
+        </p>
+        <h2><a href="news-single.html">The brief is the work.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+      <article class="article-card">
+        <p class="meta">
+          <time datetime="2026-01-30">30 January 2026</time>
+          <span class="category">Marketing</span>
+          <span>9 min read</span>
+        </p>
+        <h2><a href="news-single.html">Less marketing, better decisions.</a></h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+        <a class="read-more" href="news-single.html">Read article <span aria-hidden="true">→</span></a>
+      </article>
+
+    </section>
+
+    <!-- Pagination -->
+    <nav class="pagination" aria-label="Page navigation">
+      <a class="nav-link" href="#" aria-disabled="true"><span aria-hidden="true">←</span> Previous</a>
+      <div class="pages">
+        <a href="news.html" aria-current="page" aria-label="Page 1">1</a>
+        <a href="news.html?p=2" aria-label="Page 2">2</a>
+        <a href="news.html?p=3" aria-label="Page 3">3</a>
+        <a href="news.html?p=4" aria-label="Page 4">4</a>
+      </div>
+      <a class="nav-link" href="news.html?p=2">Next <span aria-hidden="true">→</span></a>
+    </nav>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <p class="mark">Astutely<span style="color:var(--ink-2)">.</span></p>
+      <p>A creative marketing agency for brands that need clearer direction, stronger ideas, and work that feels as considered as it is effective.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Studio</h3>
+      <ul>
+        <li>144 High Street</li>
+        <li>Holywood, BT18 9HS</li>
+        <li><a href="mailto:hello@astutelyagency.com">hello@astutelyagency.com</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Index</h3>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="mailto:hello@astutelyagency.com">Start a project</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Astutely &middot; Formerly AY Studio</span>
+    <span>Sharp thinking, beautifully applied.</span>
+  </div>
+</footer>
+
+</body>
+</html>
